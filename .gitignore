@@ -11,6 +11,10 @@ test-ledger/
 sdk/typescript/dist/
 sdk/typescript/node_modules/
 
+# Lean 4 / Lake build artifacts and fetched packages
+**/.lake/
+formal_verification/.lake/
+
 # Next.js / Vercel web demo build artifacts
 .next/
 **/.next/
