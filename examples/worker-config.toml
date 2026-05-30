@@ -1,0 +1,5 @@
+tee_vendor = "sgx"
+policy_path = "/sealed/policy.toml.sealed"
+keypair_path = "/sealed/agent-keypair.json"
+listen_addr = "127.0.0.1:8088"
+solana_rpc_url = "https://api.devnet.solana.com"

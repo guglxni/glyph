@@ -1,0 +1,28 @@
+{
+  "name": "many_accounts",
+  "description": "Stress-test: 8 accounts mixing signer/writable flags, large data blob.",
+  "intent": {
+    "agent_pubkey": "abababababababababababababababababababababababababababababababab",
+    "nonce": "cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd",
+    "target_program": "efefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefef",
+    "accounts": [
+      { "pubkey": "0000000000000000000000000000000000000000000000000000000000000001", "is_signer": true,  "is_writable": false },
+      { "pubkey": "0000000000000000000000000000000000000000000000000000000000000002", "is_signer": false, "is_writable": true  },
+      { "pubkey": "0000000000000000000000000000000000000000000000000000000000000003", "is_signer": false, "is_writable": false },
+      { "pubkey": "0000000000000000000000000000000000000000000000000000000000000004", "is_signer": true,  "is_writable": true  },
+      { "pubkey": "0000000000000000000000000000000000000000000000000000000000000005", "is_signer": false, "is_writable": true  },
+      { "pubkey": "0000000000000000000000000000000000000000000000000000000000000006", "is_signer": false, "is_writable": false },
+      { "pubkey": "0000000000000000000000000000000000000000000000000000000000000007", "is_signer": false, "is_writable": true  },
+      { "pubkey": "0000000000000000000000000000000000000000000000000000000000000008", "is_signer": false, "is_writable": false }
+    ],
+    "data_hex": "ff00ff00ff00ff00ff00ff00ff00ff00",
+    "max_lamports": "18446744073709551615",
+    "max_slippage_bps": 65535,
+    "allowed_tokens": null,
+    "expiry": 4102444800,
+    "timestamp": 1900000000,
+    "policy_commitment": "9999999999999999999999999999999999999999999999999999999999999999",
+    "worker_pubkey": "8888888888888888888888888888888888888888888888888888888888888888",
+    "epoch": 18446744073709551615
+  }
+}

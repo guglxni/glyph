@@ -1,0 +1,33 @@
+{
+  "name": "swap_with_slippage",
+  "description": "Swap intent with slippage cap and allowed_tokens (sorted in canonical bytes).",
+  "intent": {
+    "agent_pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "nonce": "2222222222222222222222222222222222222222222222222222222222222222",
+    "target_program": "3333333333333333333333333333333333333333333333333333333333333333",
+    "accounts": [
+      {
+        "pubkey": "4444444444444444444444444444444444444444444444444444444444444444",
+        "is_signer": true,
+        "is_writable": false
+      },
+      {
+        "pubkey": "5555555555555555555555555555555555555555555555555555555555555555",
+        "is_signer": false,
+        "is_writable": true
+      }
+    ],
+    "data_hex": "01020304",
+    "max_lamports": "5000000000",
+    "max_slippage_bps": 100,
+    "allowed_tokens": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "1111111111111111111111111111111111111111111111111111111111111111"
+    ],
+    "expiry": 1800000600,
+    "timestamp": 1800000000,
+    "policy_commitment": "6666666666666666666666666666666666666666666666666666666666666666",
+    "worker_pubkey": "7777777777777777777777777777777777777777777777777777777777777777",
+    "epoch": 1
+  }
+}

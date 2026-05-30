@@ -1,0 +1,49 @@
+[workspace]
+members = [
+    "circuits/glyph-circuit/host",
+    "common",
+    "scripts/extract-vk",
+    "tee-worker",
+]
+# `circuits/glyph-circuit/guest` is intentionally NOT a workspace member.
+# risc0-build compiles the guest with a different target triple
+# (riscv32im-risc0-zkvm-elf) and its own dep graph; keeping it isolated
+# avoids cross-target dep-resolution conflicts.
+exclude = ["circuits/glyph-circuit/guest"]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+repository = "https://github.com/glyph-protocol/glyph"
+
+[workspace.dependencies]
+glyph-common = { path = "common" }
+glyph-circuit-host = { path = "circuits/glyph-circuit/host" }
+
+# Serialization
+borsh = "0.10"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+toml = "0.8"
+
+# Crypto
+sha2 = "0.10"
+
+# ZK / RISC Zero
+# Pin to 1.2.x which has stable Groth16 BN254 support and Bonsai integration.
+risc0-zkvm = { version = "1.2", features = ["client"] }
+risc0-build = "1.2"
+
+# Utilities
+thiserror = "1.0"
+anyhow = "1.0"
+tracing = "0.1"
+tracing-subscriber = "0.3"
+base58 = "0.2"
+bs58 = "0.5"
+chrono = { version = "0.4", features = ["serde"] }
+zeroize = "1.7"
+hex = "0.4"
+base64 = "0.22"

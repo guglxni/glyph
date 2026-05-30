@@ -1,0 +1,44 @@
+[package]
+name = "glyph-sdk"
+version = "0.1.0"
+edition = "2021"
+
+[workspace]
+
+[features]
+default = ["sgx"]
+sgx = []
+nitro = []
+sev = []
+
+[dependencies]
+glyph-common = { path = "../../common" }
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+toml = "0.8"
+borsh = "0.10"
+bincode = "1.3"
+
+# Crypto
+sha2 = "0.10"
+ed25519-dalek = { version = "2.1", features = ["serde"] }
+base64 = "0.22"
+bs58 = "0.5"
+hex = "0.4"
+
+# Solana
+solana-sdk = "1.18"
+solana-client = "1.18"
+
+# Async
+tokio = { version = "1", features = ["full"] }
+
+# Utilities
+anyhow = "1.0"
+thiserror = "1.0"
+tracing = "0.1"
+tracing-subscriber = "0.3"
+chrono = { version = "0.4", features = ["serde"] }
+zeroize = { version = "1.7", features = ["derive"] }

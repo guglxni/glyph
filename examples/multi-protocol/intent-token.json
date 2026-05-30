@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "agent_pubkey": "Gokr9F4mEw4hHnVtBJjB55iL1WqdQQ5xrxujkjVrz3kt",
+  "nonce": "2222222222222222222222222222222222222222222222222222222222222222",
+  "timestamp": 1764000000,
+  "expiry": 1764003600,
+  "action": {
+    "type": "transfer",
+    "target_program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+    "accounts": [
+      {
+        "pubkey": "5sourceTokenAccount1111111111111111111111111",
+        "is_signer": false,
+        "is_writable": true
+      },
+      {
+        "pubkey": "6destTokenAccount11111111111111111111111111111",
+        "is_signer": false,
+        "is_writable": true
+      },
+      {
+        "pubkey": "Gokr9F4mEw4hHnVtBJjB55iL1WqdQQ5xrxujkjVrz3kt",
+        "is_signer": true,
+        "is_writable": false
+      }
+    ],
+    "data": "AwoAAAAAAAAA"
+  },
+  "constraints": {
+    "max_lamports": 250000000,
+    "max_slippage_bps": null,
+    "allowed_tokens": null
+  },
+  "signature": ""
+}

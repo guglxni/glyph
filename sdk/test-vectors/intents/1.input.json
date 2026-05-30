@@ -1,0 +1,25 @@
+{
+  "name": "minimal_transfer",
+  "description": "Smallest possible CanonicalIntent — no slippage, no allowed_tokens, no worker_pubkey.",
+  "intent": {
+    "agent_pubkey": "0101010101010101010101010101010101010101010101010101010101010101",
+    "nonce": "0202020202020202020202020202020202020202020202020202020202020202",
+    "target_program": "0303030303030303030303030303030303030303030303030303030303030303",
+    "accounts": [
+      {
+        "pubkey": "0404040404040404040404040404040404040404040404040404040404040404",
+        "is_signer": true,
+        "is_writable": true
+      }
+    ],
+    "data_hex": "deadbeef",
+    "max_lamports": "1000",
+    "max_slippage_bps": null,
+    "allowed_tokens": null,
+    "expiry": 1700000600,
+    "timestamp": 1700000000,
+    "policy_commitment": "0505050505050505050505050505050505050505050505050505050505050505",
+    "worker_pubkey": null,
+    "epoch": 0
+  }
+}

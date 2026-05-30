@@ -1,0 +1,27 @@
+# Use a stable Solana/Rust image
+FROM solanalabs/solana:v1.18.26
+
+# Install build dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    pkg-config \
+    libssl-dev \
+    curl \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Rust toolchain matching our workspace
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+ENV PATH="/root/.cargo/bin:${PATH}"
+
+WORKDIR /build
+
+# Copy only the necessary parts to build the program
+# Note: Since the program is decoupled, we need common too
+COPY common ./common
+COPY programs/glyph-verifier ./programs/glyph-verifier
+
+WORKDIR /build/programs/glyph-verifier
+
+# Run the build
+CMD ["cargo", "build-sbf"]

@@ -1,0 +1,19 @@
+{
+  "name": "empty_data",
+  "description": "Zero-length instruction data — verifies the data_len:u32 prefix encodes 0 correctly.",
+  "intent": {
+    "agent_pubkey": "0000000000000000000000000000000000000000000000000000000000000000",
+    "nonce": "0000000000000000000000000000000000000000000000000000000000000001",
+    "target_program": "0000000000000000000000000000000000000000000000000000000000000002",
+    "accounts": [],
+    "data_hex": "",
+    "max_lamports": "0",
+    "max_slippage_bps": null,
+    "allowed_tokens": [],
+    "expiry": 1,
+    "timestamp": 0,
+    "policy_commitment": "0000000000000000000000000000000000000000000000000000000000000000",
+    "worker_pubkey": null,
+    "epoch": 0
+  }
+}

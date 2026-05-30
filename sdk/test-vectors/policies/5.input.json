@@ -1,0 +1,21 @@
+{
+  "name": "many_programs_sorted_check",
+  "description": "Inputs given in unsorted order; canonical encoding must sort.",
+  "policy": {
+    "version": 1,
+    "max_lamports_per_tx": 100,
+    "allowed_programs": [
+      "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "0000000000000000000000000000000000000000000000000000000000000001",
+      "8080808080808080808080808080808080808080808080808080808080808080",
+      "1010101010101010101010101010101010101010101010101010101010101010"
+    ],
+    "time_window": null,
+    "max_daily_volume_lamports": 100,
+    "max_slippage_bps": null,
+    "allowed_token_mints": null,
+    "max_accounts_per_tx": null,
+    "require_signer_present": true,
+    "expires_at": 0
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "name": "all_optionals_set",
+  "description": "Every Option in CanonicalIntent is Some — exercises every presence byte.",
+  "intent": {
+    "agent_pubkey": "1212121212121212121212121212121212121212121212121212121212121212",
+    "nonce": "3434343434343434343434343434343434343434343434343434343434343434",
+    "target_program": "5656565656565656565656565656565656565656565656565656565656565656",
+    "accounts": [
+      { "pubkey": "7878787878787878787878787878787878787878787878787878787878787878", "is_signer": true,  "is_writable": true },
+      { "pubkey": "9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a", "is_signer": false, "is_writable": false }
+    ],
+    "data_hex": "0011223344556677",
+    "max_lamports": "1234567890",
+    "max_slippage_bps": 250,
+    "allowed_tokens": [
+      "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    ],
+    "expiry": 2000000000,
+    "timestamp": 1999999000,
+    "policy_commitment": "dededededededededededededededededededededededededededededededede",
+    "worker_pubkey": "fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe",
+    "epoch": 7
+  }
+}

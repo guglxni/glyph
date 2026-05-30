@@ -1,0 +1,21 @@
+[package]
+name = "glyph-circuit-guest"
+version = "0.1.0"
+edition = "2021"
+
+# Isolate from parent workspace — risc0-build compiles the guest with a
+# different target triple (riscv32im-risc0-zkvm-elf) and its own dep
+# resolution. Inheriting workspace state breaks the embedded compile.
+[workspace]
+
+[dependencies]
+risc0-zkvm = { version = "1.2", default-features = false, features = ["std"] }
+sha2 = { version = "0.10", default-features = false }
+serde = { version = "1", default-features = false, features = ["derive"] }
+borsh = { version = "0.10", default-features = false }
+glyph-common = { path = "/Users/aaryanguglani/Documents/workspace1/glyph/common" }
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1

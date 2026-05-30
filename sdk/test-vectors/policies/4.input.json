@@ -1,0 +1,15 @@
+{
+  "name": "expiry_only",
+  "policy": {
+    "version": 1,
+    "max_lamports_per_tx": 1,
+    "allowed_programs": [],
+    "time_window": null,
+    "max_daily_volume_lamports": 1,
+    "max_slippage_bps": null,
+    "allowed_token_mints": null,
+    "max_accounts_per_tx": null,
+    "require_signer_present": false,
+    "expires_at": 18446744073709551615
+  }
+}

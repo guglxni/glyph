@@ -1,0 +1,21 @@
+{
+  "name": "all_optionals_set",
+  "policy": {
+    "version": 2,
+    "max_lamports_per_tx": 1000000,
+    "allowed_programs": [
+      "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "0101010101010101010101010101010101010101010101010101010101010101"
+    ],
+    "time_window": { "start_hour_utc": 22, "end_hour_utc": 5 },
+    "max_daily_volume_lamports": 100000000,
+    "max_slippage_bps": 50,
+    "allowed_token_mints": [
+      "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "max_accounts_per_tx": 12,
+    "require_signer_present": true,
+    "expires_at": 1893456000
+  }
+}

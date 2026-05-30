@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "agent_pubkey": "11111111111111111111111111111111",
+  "nonce": "deadbeefdeadbeefdeadbeefdeadbeef",
+  "timestamp": 1700000000,
+  "expiry": 1700003600,
+  "action": {
+    "type": "swap",
+    "target_program": "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4",
+    "accounts": [
+      {
+        "pubkey": "11111111111111111111111111111111",
+        "is_signer": true,
+        "is_writable": true
+      },
+      {
+        "pubkey": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        "is_signer": false,
+        "is_writable": true
+      }
+    ],
+    "data": "AQIDBAUGBwg="
+  },
+  "constraints": {
+    "max_lamports": 1500000000,
+    "max_slippage_bps": 50,
+    "allowed_tokens": [
+      "So11111111111111111111111111111111111111112",
+      "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+    ]
+  },
+  "signature": ""
+}

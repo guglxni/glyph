@@ -1,0 +1,41 @@
+# GLYPH Universal Guardrail Policy — "one policy, ANY Solana program"
+#
+# This is a SINGLE policy file. Its SHA-256 canonical commitment is what gets
+# stored on-chain in the AgentRegistry PDA. The TEE worker's PolicyEngine treats
+# every target instruction as OPAQUE BYTES — there is NO protocol-specific
+# parsing anywhere in the pipeline. The only program-aware rule is the generic
+# `allowed_programs` allowlist below.
+#
+# The accompanying intents (intent-transfer.json, intent-token.json,
+# intent-memo.json) each target a DIFFERENT, unrelated program, yet they are all
+# authorized by THIS one policy and produce the IDENTICAL policy_commitment.
+
+[rules]
+# Rule 1 — per-transaction lamport ceiling (generic spend cap).
+max_lamports_per_tx = 1_000_000_000  # 1 SOL
+
+# Rule 2 — the ONLY program-aware rule. Three unrelated, well-known mainnet/
+# devnet programs. Add a program here and the same prove/verify flow guards it;
+# no new code, no new circuit, no protocol adapter.
+allowed_programs = [
+  "11111111111111111111111111111111",             # System Program (native transfer)
+  "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",  # SPL Token program (token transfer)
+  "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr",  # SPL Memo program (on-chain note)
+]
+
+# Rule 4 — aggregate daily volume cap (generic).
+max_daily_volume_lamports = 5_000_000_000  # 5 SOL
+
+# Rule 7 — maximum number of accounts in a single transaction (generic).
+max_accounts_per_tx = 16
+
+# Rule 8 — at least one signer must be present (generic).
+require_signer_present = true
+
+# Rule 9 — policy expiry (unix seconds, UTC). 0 = never expires.
+expires_at = 0
+
+# NOTE: We intentionally omit `require_slippage_bps_lte` and
+# `allowed_token_mints` here. Those are swap/token-specific constraints; leaving
+# them unset keeps this policy genuinely program-agnostic so the exact same file
+# authorizes a System transfer, an SPL token transfer, and a Memo write.

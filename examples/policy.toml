@@ -1,0 +1,41 @@
+# GLYPH Agent Policy Configuration
+# This file defines the spend rules enforced by the TEE worker.
+# The SHA-256 hash of this file's canonical serialization is stored on-chain
+# as the policy_commitment in the AgentRegistry PDA.
+
+[rules]
+# Maximum lamports (in native SOL units) per single transaction
+max_lamports_per_tx = 5_000_000_000  # 5 SOL
+
+# Programs the agent is allowed to interact with
+allowed_programs = [
+  "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4",  # Jupiter v6
+  "11111111111111111111111111111111",             # System Program
+]
+
+# Maximum total volume in a 24-hour UTC day
+max_daily_volume_lamports = 50_000_000_000  # 50 SOL
+
+# Maximum slippage tolerance (basis points)
+require_slippage_bps_lte = 100  # 1%
+
+# Token mints the agent may interact with
+allowed_token_mints = [
+  "So11111111111111111111111111111111111111112",   # Wrapped SOL
+  "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",  # USDC
+]
+
+# Max number of accounts in a single transaction
+max_accounts_per_tx = 20
+
+# Require at least one signer in the accounts list
+require_signer_present = true
+
+# Policy expiry (unix seconds, UTC). 0 = never expires.
+# When set, the policy engine will reject all intents after this timestamp.
+expires_at = 0
+
+# Time window during which the agent may operate (UTC)
+[rules.time_window]
+start_hour_utc = 8
+end_hour_utc = 20

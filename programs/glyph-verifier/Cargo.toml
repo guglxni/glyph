@@ -1,0 +1,38 @@
+[package]
+name = "glyph-verifier"
+version = "0.1.0"
+edition = "2021"
+
+[workspace]
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "glyph_verifier"
+
+[features]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+cpi = ["no-entrypoint"]
+client = []
+devnet = []
+default = []
+# Enable when `src/groth16/vk_real.rs` has been populated by
+# `scripts/extract-vk --features risc0`. With this feature on,
+# `groth16::vk::GLYPH_VK_REAL` is `Some(_)` and operators may bootstrap the
+# `VerifierVk` PDA via the one-shot `seed_vk` instruction instead of the
+# multisig+timelock flow.
+real-vk = []
+
+[dependencies]
+anchor-lang = { version = "0.30.1", features = ["init-if-needed"] }
+anchor-spl = "0.30.1"
+solana-program = "=1.18.26"
+sha2 = { version = "0.10", default-features = false }
+hex = { version = "0.4", default-features = false, features = ["alloc"] }
+borsh = "0.10"
+glyph-common = { path = "../../common" }
+constant_time_eq = "=0.3.1"
+
+[dev-dependencies]
+proptest = "1.4"

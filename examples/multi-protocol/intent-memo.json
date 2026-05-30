@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "agent_pubkey": "Gokr9F4mEw4hHnVtBJjB55iL1WqdQQ5xrxujkjVrz3kt",
+  "nonce": "3333333333333333333333333333333333333333333333333333333333333333",
+  "timestamp": 1764000000,
+  "expiry": 1764003600,
+  "action": {
+    "type": "cpi_call",
+    "target_program": "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr",
+    "accounts": [
+      {
+        "pubkey": "Gokr9F4mEw4hHnVtBJjB55iL1WqdQQ5xrxujkjVrz3kt",
+        "is_signer": true,
+        "is_writable": false
+      }
+    ],
+    "data": "Z2x5cGg6IHVuaXZlcnNhbCBndWFyZHJhaWw="
+  },
+  "constraints": {
+    "max_lamports": 0,
+    "max_slippage_bps": null,
+    "allowed_tokens": null
+  },
+  "signature": ""
+}

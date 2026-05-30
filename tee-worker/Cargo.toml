@@ -1,0 +1,102 @@
+[package]
+name = "glyph-tee-worker"
+version = "0.1.0"
+edition = "2021"
+
+
+
+[lib]
+name = "glyph_tee_worker"
+path = "src/lib.rs"
+
+[[bin]]
+name = "glyph-tee-worker"
+path = "src/main.rs"
+
+[dependencies]
+glyph-common = { path = "../common" }
+glyph-circuit-host = { path = "../circuits/glyph-circuit/host" }
+
+# REMOVED solana-sdk to resolve zeroize conflict.
+# We will use raw types for tx construction.
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+serde_with = { version = "3.0", features = ["base64"] }
+serde_bytes = "0.11"
+toml = "0.8"
+borsh = "0.10"
+bincode = "1.3"
+
+# Crypto
+sha2 = "0.10"
+ed25519-dalek = { version = "2.1", features = ["serde"] }
+base64 = "0.22"
+bs58 = "0.5"
+hex = "0.4"
+
+# Async
+tokio = { version = "1", features = ["full"] }
+
+# Utilities
+anyhow = "1.0"
+thiserror = "1.0"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+chrono = { version = "0.4", features = ["serde"] }
+zeroize = { version = "1.7", features = ["derive"] }
+
+# Dev-mode sealing (passphrase-derived AEAD; replaces identity passthrough).
+# DEV ONLY — production sealing is performed by a TEE-bound key (KMS for Nitro,
+# EGETKEY for SGX, vTPM/KMS for SEV-SNP). See vendors/dev_seal.rs.
+argon2 = "0.5"
+chacha20poly1305 = "0.10"
+rand = "0.8"
+constant_time_eq = "0.3"
+
+# BN254 G2 subgroup check (off-chain pre-bundle validation).
+# Solana 1.18 lacks a G2 scalar-mul syscall, so we perform the
+# `r·P == identity` check in software inside the TEE worker before
+# emitting the proof bundle. Closes AUDIT_ZK F-4 G2 slice.
+ark-bn254 = "0.4"
+ark-ec = "0.4"
+ark-ff = "0.4"
+ark-serialize = { version = "0.4", features = ["derive"] }
+
+# Network hardening (WS-5): mTLS via rustls + tokio-rustls. Deps chosen so they
+# do not pull in any solana-* crates and therefore don't conflict with the
+# zeroize pin. axum is used to replace the hand-rolled metrics HTTP server
+# (closes T39) and serve the new /audit endpoint (closes T20).
+rustls = "0.23"
+rustls-pemfile = "2.1"
+tokio-rustls = "0.26"
+axum = "0.7"
+hyper = "1"
+tower = "0.5"
+tower-http = { version = "0.5", features = ["limit"] }
+
+# Production Nitro path — gated behind the `nitro-prod` feature so default builds
+# do not pull AWS SDK crates. Real Nitro hardware is required to exercise these
+# code paths; CI verifies the default build only.
+aws-nitro-enclaves-nsm-api = { version = "0.4", optional = true }
+aws-sdk-kms = { version = "1.40", optional = true }
+aws-config = { version = "1.5", optional = true }
+coset = { version = "0.3", optional = true }
+x509-parser = { version = "0.16", optional = true }
+
+[dev-dependencies]
+# rcgen lets the mTLS test mint a transient self-signed CA + server + client
+# cert without needing pre-baked PEM fixtures on disk.
+rcgen = "0.13"
+tempfile = "3"
+
+[features]
+risc0 = []
+nitro-prod = [
+    "aws-nitro-enclaves-nsm-api",
+    "aws-sdk-kms",
+    "aws-config",
+    "coset",
+    "x509-parser",
+]

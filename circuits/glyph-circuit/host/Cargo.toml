@@ -1,0 +1,41 @@
+[package]
+name = "glyph-circuit-host"
+version.workspace = true
+edition.workspace = true
+
+# risc0-build reads this table to discover guest method packages.
+# `methods` lists the *guest* package directory names (relative to the
+# host's manifest dir). risc0-build compiles each, embeds the ELF,
+# and computes the image_id.
+#
+# `guest` is a symlink to `../guest` (created in the host directory) so the
+# path resolves without `..` segments — risc0-build's internal path
+# comparison fails on canonicalized vs literal paths.
+[package.metadata.risc0]
+methods = ["guest"]
+
+[features]
+# Enable to compile and embed the guest ELF via risc0-build.
+# Requires: rzup install (cargo-risczero + rust + r0vm).
+# Usage:    cargo build -p glyph-circuit-host --features risc0
+risc0 = ["risc0-zkvm/prove", "dep:risc0-build"]
+
+# Enable the WS-8 property test against the PolicyEngine oracle (closes F-32).
+# Off by default to keep `cargo test -p glyph-circuit-host` fast.
+proptest = ["dep:proptest"]
+
+[dependencies]
+risc0-zkvm = { workspace = true, optional = true }
+sha2 = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+borsh = { workspace = true }
+anyhow = { workspace = true }
+hex = { workspace = true }
+glyph-common = { workspace = true }
+proptest = { version = "1.4", optional = true }
+
+[build-dependencies]
+# Only needed when the risc0 feature is enabled.
+# risc0-build compiles the guest ELF and generates the include_elf! macro.
+risc0-build = { workspace = true, optional = true }

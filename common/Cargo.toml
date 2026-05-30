@@ -1,0 +1,25 @@
+[package]
+name = "glyph-common"
+version.workspace = true
+edition.workspace = true
+
+[features]
+default = []
+# Enable the gen-test-vectors helper binary.
+vector-gen = ["dep:serde_json", "dep:hex"]
+
+[dependencies]
+serde = { workspace = true }
+sha2 = { workspace = true }
+borsh = { workspace = true }
+serde_json = { workspace = true, optional = true }
+hex = { workspace = true, optional = true }
+
+[dev-dependencies]
+serde_json = { workspace = true }
+hex = { workspace = true }
+
+[[bin]]
+name = "gen-test-vectors"
+path = "src/bin/gen_test_vectors.rs"
+required-features = ["vector-gen"]

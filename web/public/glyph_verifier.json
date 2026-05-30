@@ -1,0 +1,1930 @@
+{
+  "version": "0.1.0",
+  "name": "glyph_verifier",
+  "instructions": [
+    {
+      "name": "initialize",
+      "accounts": [
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "config",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": "InitializeArgs"
+          }
+        }
+      ]
+    },
+    {
+      "name": "registerAgent",
+      "accounts": [
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "agentRegistry",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "agentPubkey",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "config",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "instructionsSysvar",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "program can locate the sibling Ed25519Program instruction proving the",
+            "delegator signature."
+          ]
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": "RegisterAgentArgs"
+          }
+        }
+      ]
+    },
+    {
+      "name": "deregisterAgent",
+      "accounts": [
+        {
+          "name": "agent",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "agentRegistry",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": "DeregisterAgentArgs"
+          }
+        }
+      ]
+    },
+    {
+      "name": "updatePolicy",
+      "accounts": [
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "agentRegistry",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "config",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": "UpdatePolicyArgs"
+          }
+        }
+      ]
+    },
+    {
+      "name": "pause",
+      "docs": [
+        "Pause the verifier. Halts `verify_and_execute`, `register_agent`, and",
+        "`update_policy`. Closes the dead `paused` field in `VerifierConfig`."
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "config",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "unpause",
+      "docs": [
+        "Resume the verifier."
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "config",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "commitAuditRoot",
+      "docs": [
+        "WS-6 — Anchor a Merkle root of the worker's sealed audit log on-chain.",
+        "",
+        "The instruction performs structural validation and persists the",
+        "(root, sequence_high, anchored_at, signature) tuple in a per-agent",
+        "`AuditAnchor` PDA, plus emits `AuditRootCommitted`.",
+        "",
+        "**Signature verification model.** The ed25519 signature over",
+        "`(agent_pubkey, root, sequence_high, anchored_at)` is verified",
+        "off-chain by indexers using the agent's registered pubkey. The",
+        "payload format is fixed by `tee-worker/src/main.rs::build_anchor_signing_payload`,",
+        "so a third-party auditor that re-derives the payload + checks the",
+        "signature against `registry.agent_pubkey` has the same guarantees as",
+        "an on-chain verifier. Adding the on-chain ed25519 precompile to this",
+        "instruction is left as a follow-up (it requires reading the",
+        "instructions sysvar to confirm a sibling `Ed25519Program` ix ran);",
+        "the data path is fully wired today.",
+        "",
+        "We DO refuse trivially-bad inputs:",
+        "- sequence_high must monotonically increase,",
+        "- root must not be all-zeros (genesis is meaningless to anchor),",
+        "- anchored_at must be within ±5 minutes of the on-chain Clock."
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "agentPubkey",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "as the ed25519 verifying key. Anchor validates the seed; the program",
+            "verifies the signature."
+          ]
+        },
+        {
+          "name": "registry",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "auditAnchor",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": "CommitAuditRootArgs"
+          }
+        }
+      ]
+    },
+    {
+      "name": "verifyAndExecute",
+      "accounts": [
+        {
+          "name": "agent",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "registry",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "config",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "verifierVk",
+          "isMut": false,
+          "isSigner": false,
+          "docs": [
+            "On-chain Groth16 VK. Loaded read-only every verify; rotated via the",
+            "multisig + timelock instructions below. Closes F-9."
+          ]
+        },
+        {
+          "name": "nonceAccount",
+          "isMut": true,
+          "isSigner": false,
+          "docs": [
+            "Nonce PDA. We use `init_if_needed` so an existing PDA does NOT silently",
+            "fail account-validation; instead we explicitly check `consumed_at == 0`",
+            "in the instruction body and surface `NonceAlreadyConsumed` (closes",
+            "F-27). Including `registry.agent_pubkey` in the seed prevents",
+            "cross-agent nonce confusion (see MIGRATION.md)."
+          ]
+        },
+        {
+          "name": "instructionsSysvar",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": "VerifyAndExecuteArgs"
+          }
+        }
+      ]
+    },
+    {
+      "name": "initializeVerifierVk",
+      "docs": [
+        "Initialize the empty `VerifierVk` PDA. Subsequent `seed_vk` or",
+        "`execute_vk_update` populates the bytes."
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "config",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "verifierVk",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "seedVk",
+      "docs": [
+        "Bootstrap the VK from `GLYPH_VK_REAL` if it was baked in via the",
+        "`real-vk` build feature. Returns `RealVkUnavailable` otherwise."
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "config",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "verifierVk",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "imageId",
+          "type": {
+            "array": [
+              "u32",
+              8
+            ]
+          }
+        },
+        {
+          "name": "proverVersion",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "initializeVkMultisig",
+      "accounts": [
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "config",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vkMultisig",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": "InitializeVkMultisigArgs"
+          }
+        }
+      ]
+    },
+    {
+      "name": "proposeVkUpdate",
+      "accounts": [
+        {
+          "name": "proposer",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "vkMultisig",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": "ProposeVkUpdateArgs"
+          }
+        }
+      ]
+    },
+    {
+      "name": "approveVkUpdate",
+      "accounts": [
+        {
+          "name": "approver",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "vkMultisig",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "executeVkUpdate",
+      "accounts": [
+        {
+          "name": "executor",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "vkMultisig",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "verifierVk",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "VerifierVk",
+      "docs": [
+        "On-chain Groth16 verification key, stored in a singleton PDA at seeds",
+        "`[b\"verifier_vk\"]`.",
+        "",
+        "The verifier loads the VK from this account at every `verify_and_execute`",
+        "call. Updates are gated by `VkMultisig` + a 24-hour timelock."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "alphaG1",
+            "docs": [
+              "G1 alpha (64 bytes)."
+            ],
+            "type": {
+              "array": [
+                "u8",
+                64
+              ]
+            }
+          },
+          {
+            "name": "betaG2",
+            "docs": [
+              "G2 beta (128 bytes)."
+            ],
+            "type": {
+              "array": [
+                "u8",
+                128
+              ]
+            }
+          },
+          {
+            "name": "gammaG2",
+            "docs": [
+              "G2 gamma (128 bytes)."
+            ],
+            "type": {
+              "array": [
+                "u8",
+                128
+              ]
+            }
+          },
+          {
+            "name": "deltaG2",
+            "docs": [
+              "G2 delta (128 bytes)."
+            ],
+            "type": {
+              "array": [
+                "u8",
+                128
+              ]
+            }
+          },
+          {
+            "name": "ic",
+            "docs": [
+              "6 × G1 IC entries (constant + 5 per-public-input)."
+            ],
+            "type": {
+              "array": [
+                {
+                  "array": [
+                    "u8",
+                    64
+                  ]
+                },
+                6
+              ]
+            }
+          },
+          {
+            "name": "controlRoot",
+            "docs": [
+              "RISC Zero `Groth16ReceiptVerifierParameters.control_root` (BE digest)."
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "bn254ControlId",
+            "docs": [
+              "RISC Zero `Groth16ReceiptVerifierParameters.bn254_control_id` (BE digest)."
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "vkHash",
+            "docs": [
+              "SHA-256 hash of the serialized VK bytes (alpha || beta || gamma ||",
+              "delta || ic[0..6] || control_root || bn254_control_id). Convenience",
+              "for off-chain integrity checks."
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "imageId",
+            "docs": [
+              "RISC Zero circuit image_id this VK was extracted for."
+            ],
+            "type": {
+              "array": [
+                "u32",
+                8
+              ]
+            }
+          },
+          {
+            "name": "proverVersion",
+            "docs": [
+              "Free-form prover-version string (e.g. `\"risc0-zkvm 1.2.6\"`). Bounded",
+              "to 64 bytes via the size constant below."
+            ],
+            "type": "string"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "PDA bump."
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VkMultisig",
+      "docs": [
+        "Multisig governance account for VK rotations. Singleton at seeds",
+        "`[b\"vk_multisig\"]`."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "signers",
+            "docs": [
+              "Authorized signers (zero-padded; only the first `signer_count` entries",
+              "are live)."
+            ],
+            "type": {
+              "array": [
+                "publicKey",
+                5
+              ]
+            }
+          },
+          {
+            "name": "signerCount",
+            "docs": [
+              "Number of live signer entries (≤ `VK_MULTISIG_MAX_SIGNERS`)."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "threshold",
+            "docs": [
+              "Number of approvals required to execute a pending update."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "pendingUpdate",
+            "docs": [
+              "Optional in-flight proposal."
+            ],
+            "type": {
+              "option": {
+                "defined": "PendingVkUpdate"
+              }
+            }
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "PDA bump."
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AgentRegistry",
+      "docs": [
+        "Agent registry account - tracks registered AI agents"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "publicKey"
+          },
+          {
+            "name": "agentPubkey",
+            "type": "publicKey"
+          },
+          {
+            "name": "policyCommitment",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "attestationHash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "attestationType",
+            "type": {
+              "defined": "AttestationType"
+            }
+          },
+          {
+            "name": "policyEpoch",
+            "type": "u32"
+          },
+          {
+            "name": "createdAt",
+            "type": "i64"
+          },
+          {
+            "name": "lastUpdated",
+            "type": "i64"
+          },
+          {
+            "name": "isActive",
+            "type": "bool"
+          },
+          {
+            "name": "imageId",
+            "docs": [
+              "Pinned RISC Zero circuit image_id. Proofs whose committed image_id does",
+              "not match are rejected. Closes F-8."
+            ],
+            "type": {
+              "array": [
+                "u32",
+                8
+              ]
+            }
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AuditAnchor",
+      "docs": [
+        "WS-6: Per-agent audit-root anchor (closes T20 part 2).",
+        "",
+        "The TEE worker periodically Merkle-roots its sealed audit log and submits",
+        "`commit_audit_root(root, sequence_high)`. The instruction verifies an",
+        "ed25519 signature over `(agent_pubkey, root, sequence_high, anchored_at)`",
+        "against the agent's registered pubkey (the worker IS the agent's signer",
+        "per the audit's WS-6 §2 wiring) and persists the result here. Off-chain",
+        "auditors compare exported audit-log Merkle roots against this anchor."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agentPubkey",
+            "type": "publicKey"
+          },
+          {
+            "name": "lastAuditRoot",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "lastSequence",
+            "type": "u64"
+          },
+          {
+            "name": "anchoredAt",
+            "type": "i64"
+          },
+          {
+            "name": "anchorCount",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "NonceAccount",
+      "docs": [
+        "Nonce account - tracks consumed nonces for replay prevention"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "nonce",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "agentPubkey",
+            "type": "publicKey"
+          },
+          {
+            "name": "policyEpoch",
+            "type": "u32"
+          },
+          {
+            "name": "consumedAt",
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VerifierConfig",
+      "docs": [
+        "Verifier config account - protocol-level configuration"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "publicKey"
+          },
+          {
+            "name": "paused",
+            "type": "bool"
+          },
+          {
+            "name": "initialized",
+            "type": "bool"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RelayAccount",
+      "docs": [
+        "Relay account state for cross-chain bridges"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "chainId",
+            "type": "u64"
+          },
+          {
+            "name": "bridgeProgram",
+            "type": "publicKey"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "VerifierVkInner",
+      "docs": [
+        "Inner VK payload used by the `propose_vk_update` instruction. Mirrors",
+        "`Groth16VerifyingKey` but is `AnchorSerialize`/`AnchorDeserialize` so it",
+        "can travel over the wire as instruction args."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "alphaG1",
+            "type": {
+              "array": [
+                "u8",
+                64
+              ]
+            }
+          },
+          {
+            "name": "betaG2",
+            "type": {
+              "array": [
+                "u8",
+                128
+              ]
+            }
+          },
+          {
+            "name": "gammaG2",
+            "type": {
+              "array": [
+                "u8",
+                128
+              ]
+            }
+          },
+          {
+            "name": "deltaG2",
+            "type": {
+              "array": [
+                "u8",
+                128
+              ]
+            }
+          },
+          {
+            "name": "ic",
+            "type": {
+              "array": [
+                {
+                  "array": [
+                    "u8",
+                    64
+                  ]
+                },
+                6
+              ]
+            }
+          },
+          {
+            "name": "controlRoot",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "bn254ControlId",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "proverVersion",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PendingVkUpdate",
+      "docs": [
+        "A pending VK rotation. Cleared on `execute_vk_update` (success) or",
+        "`cancel_vk_update` (out of scope here — operators redeploy multisig if a",
+        "proposal must be aborted before timelock)."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "newVkHash",
+            "docs": [
+              "SHA-256 of the proposed VK bytes (used to bind approvals to a specific",
+              "candidate; signers approve a hash, not the live `pending_update.vk`)."
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "newImageId",
+            "docs": [
+              "Image_id to install with the new VK."
+            ],
+            "type": {
+              "array": [
+                "u32",
+                8
+              ]
+            }
+          },
+          {
+            "name": "proposedAt",
+            "docs": [
+              "Unix timestamp at which the proposal was made."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "approvedSigners",
+            "docs": [
+              "Multisig signers that have approved this hash. The proposer is",
+              "implicitly the first approver."
+            ],
+            "type": {
+              "vec": "publicKey"
+            }
+          },
+          {
+            "name": "vk",
+            "docs": [
+              "Full proposed VK bytes — kept inline so `execute_vk_update` does not",
+              "need to re-receive them and risk a TOCTOU between approval and exec."
+            ],
+            "type": {
+              "defined": "VerifierVkInner"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Groth16Proof",
+      "docs": [
+        "Groth16 proof structure for BN254 proofs.",
+        "",
+        "A Groth16 proof consists of three elliptic curve points:",
+        "- A: G1 point (64 bytes: 32 bytes x || 32 bytes y)",
+        "- B: G2 point (128 bytes: two G1 coordinates)",
+        "- C: G1 point (64 bytes: 32 bytes x || 32 bytes y)"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "a",
+            "type": {
+              "array": [
+                "u8",
+                64
+              ]
+            }
+          },
+          {
+            "name": "b",
+            "type": {
+              "array": [
+                "u8",
+                128
+              ]
+            }
+          },
+          {
+            "name": "c",
+            "type": {
+              "array": [
+                "u8",
+                64
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "RegisterAgentArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agentPubkey",
+            "type": "publicKey"
+          },
+          {
+            "name": "teeType",
+            "type": "u8"
+          },
+          {
+            "name": "teeAttestation",
+            "type": "bytes"
+          },
+          {
+            "name": "policyCommitment",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "imageId",
+            "docs": [
+              "Circuit image_id this agent's proofs must commit to. Closes F-8."
+            ],
+            "type": {
+              "array": [
+                "u32",
+                8
+              ]
+            }
+          },
+          {
+            "name": "delegatorSignature",
+            "docs": [
+              "WS-9: Ed25519 signature by the delegator (the human/principal granting",
+              "the agent its powers) over the canonical delegation payload. Verified",
+              "against a sibling `Ed25519Program` instruction. See",
+              "`delegation_signing_payload` for the byte layout."
+            ],
+            "type": {
+              "array": [
+                "u8",
+                64
+              ]
+            }
+          },
+          {
+            "name": "delegatorPubkey",
+            "docs": [
+              "WS-9: Public key of the delegator. Must match the",
+              "`Ed25519Program` instruction's pubkey + payload."
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "delegationExpiry",
+            "docs": [
+              "WS-9: Expiry timestamp (unix seconds) of the delegation itself. The",
+              "agent may not register past this point. Included in the signed payload."
+            ],
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DeregisterAgentArgs",
+      "type": {
+        "kind": "struct",
+        "fields": []
+      }
+    },
+    {
+      "name": "UpdatePolicyArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "newPolicyCommitment",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "teeAttestation",
+            "type": "bytes"
+          },
+          {
+            "name": "expectedCurrentEpoch",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "InitializeArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "publicKey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CommitAuditRootArgs",
+      "docs": [
+        "WS-6 — `commit_audit_root` instruction arguments.",
+        "",
+        "Worker submits the Merkle root + the highest sequence number it has",
+        "anchored, plus an ed25519 signature over the canonical payload (see",
+        "`tee-worker/src/main.rs::build_anchor_signing_payload`)."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "root",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "sequenceHigh",
+            "type": "u64"
+          },
+          {
+            "name": "anchoredAt",
+            "type": "i64"
+          },
+          {
+            "name": "workerSignature",
+            "docs": [
+              "Ed25519 signature over the canonical payload, by the agent_pubkey."
+            ],
+            "type": {
+              "array": [
+                "u8",
+                64
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "VerifyAndExecuteArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "proof",
+            "type": {
+              "defined": "groth16::Groth16Proof"
+            }
+          },
+          {
+            "name": "journalBytes",
+            "type": "bytes"
+          },
+          {
+            "name": "nonce",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "InitializeVkMultisigArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "signers",
+            "type": {
+              "vec": "publicKey"
+            }
+          },
+          {
+            "name": "threshold",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProposeVkUpdateArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "newVk",
+            "type": {
+              "defined": "groth16::vk::VerifierVkInner"
+            }
+          },
+          {
+            "name": "newImageId",
+            "type": {
+              "array": [
+                "u32",
+                8
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "AttestationType",
+      "docs": [
+        "Attestation type enum for different TEE implementations"
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "None"
+          },
+          {
+            "name": "Nitro"
+          },
+          {
+            "name": "Sgx"
+          },
+          {
+            "name": "Sev"
+          },
+          {
+            "name": "Azure"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VerifyingKey",
+      "docs": [
+        "Backwards-compatible alias for the legacy name. New code should prefer",
+        "`Groth16VerifyingKey`."
+      ],
+      "type": {
+        "kind": "alias",
+        "value": {
+          "defined": "Groth16VerifyingKey"
+        }
+      }
+    }
+  ],
+  "events": [
+    {
+      "name": "AgentRegistered",
+      "fields": [
+        {
+          "name": "agentPubkey",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "authority",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "attestationType",
+          "type": "u8",
+          "index": false
+        },
+        {
+          "name": "policyCommitment",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          },
+          "index": false
+        },
+        {
+          "name": "timestamp",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "AgentDeregistered",
+      "fields": [
+        {
+          "name": "agentPubkey",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "timestamp",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "PolicyUpdated",
+      "fields": [
+        {
+          "name": "agentPubkey",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "newPolicyCommitment",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          },
+          "index": false
+        },
+        {
+          "name": "newEpoch",
+          "type": "u32",
+          "index": false
+        },
+        {
+          "name": "timestamp",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "VerifierInitialized",
+      "fields": [
+        {
+          "name": "authority",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "timestamp",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "VerificationSuccess",
+      "fields": [
+        {
+          "name": "agentPubkey",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "nonce",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          },
+          "index": false
+        },
+        {
+          "name": "policyEpoch",
+          "type": "u32",
+          "index": false
+        },
+        {
+          "name": "timestamp",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "AuditRootCommitted",
+      "fields": [
+        {
+          "name": "agentPubkey",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "root",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          },
+          "index": false
+        },
+        {
+          "name": "sequenceHigh",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "anchoredAt",
+          "type": "i64",
+          "index": false
+        },
+        {
+          "name": "anchorCount",
+          "type": "u64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "VkUpdated",
+      "fields": [
+        {
+          "name": "oldHash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          },
+          "index": false
+        },
+        {
+          "name": "newHash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          },
+          "index": false
+        },
+        {
+          "name": "imageId",
+          "type": {
+            "array": [
+              "u32",
+              8
+            ]
+          },
+          "index": false
+        },
+        {
+          "name": "timestamp",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "VkUpdateProposed",
+      "fields": [
+        {
+          "name": "proposer",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "newHash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          },
+          "index": false
+        },
+        {
+          "name": "newImageId",
+          "type": {
+            "array": [
+              "u32",
+              8
+            ]
+          },
+          "index": false
+        },
+        {
+          "name": "proposedAt",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "VkUpdateApproved",
+      "fields": [
+        {
+          "name": "approver",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "newHash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          },
+          "index": false
+        },
+        {
+          "name": "approvals",
+          "type": "u8",
+          "index": false
+        },
+        {
+          "name": "threshold",
+          "type": "u8",
+          "index": false
+        }
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 12000,
+      "name": "Groth16PairingFailed",
+      "msg": "Groth16 proof verification failed - pairing check did not converge to identity"
+    },
+    {
+      "code": 12001,
+      "name": "Groth16InvalidG1Point",
+      "msg": "Invalid G1 point - point is not on curve or is identity"
+    },
+    {
+      "code": 12002,
+      "name": "Groth16InvalidG2Point",
+      "msg": "Invalid G2 point - point is not on curve"
+    },
+    {
+      "code": 12003,
+      "name": "Groth16UnexpectedResult",
+      "msg": "Proof verification returned unexpected result"
+    },
+    {
+      "code": 12004,
+      "name": "AltBn128SyscallFailed",
+      "msg": "Alt BN128 syscall failed"
+    },
+    {
+      "code": 12005,
+      "name": "InvalidProofFormat",
+      "msg": "Invalid proof format - proof points are invalid"
+    },
+    {
+      "code": 12006,
+      "name": "ProofVerificationFailed",
+      "msg": "Proof verification failed"
+    },
+    {
+      "code": 12010,
+      "name": "InvalidJournalEncoding",
+      "msg": "Failed to decode journal bytes - invalid borsh encoding"
+    },
+    {
+      "code": 12011,
+      "name": "JournalHashMismatch",
+      "msg": "Journal hash mismatch - computed hash does not match expected"
+    },
+    {
+      "code": 12012,
+      "name": "PolicyCommitmentMismatch",
+      "msg": "Policy commitment mismatch - proof was generated for different policy"
+    },
+    {
+      "code": 12013,
+      "name": "AgentPubkeyMismatch",
+      "msg": "Agent pubkey mismatch - proof was generated for different agent"
+    },
+    {
+      "code": 12020,
+      "name": "TxHashBindingFailed",
+      "msg": "Transaction hash binding failed - next instruction does not match proof"
+    },
+    {
+      "code": 12021,
+      "name": "InstructionsSysvarFailed",
+      "msg": "Instructions sysvar access failed"
+    },
+    {
+      "code": 12022,
+      "name": "MissingNextInstruction",
+      "msg": "No next instruction found - verify_and_execute must be followed by target instruction"
+    },
+    {
+      "code": 12023,
+      "name": "InstructionIndexOverflow",
+      "msg": "Instruction index calculation overflow"
+    },
+    {
+      "code": 12030,
+      "name": "NonceAlreadyConsumed",
+      "msg": "Nonce already consumed - transaction has been replayed"
+    },
+    {
+      "code": 12031,
+      "name": "NonceInitializationFailed",
+      "msg": "Nonce PDA initialization failed - nonce may already exist"
+    },
+    {
+      "code": 12032,
+      "name": "PolicyEpochMismatch",
+      "msg": "Policy epoch mismatch - policy was updated, nonce from old epoch"
+    },
+    {
+      "code": 12033,
+      "name": "ZeroNonce",
+      "msg": "Nonce cannot be zero"
+    },
+    {
+      "code": 12040,
+      "name": "AgentNotRegistered",
+      "msg": "Agent not registered"
+    },
+    {
+      "code": 12041,
+      "name": "AgentNotActive",
+      "msg": "Agent is not active"
+    },
+    {
+      "code": 12042,
+      "name": "AgentAlreadyRegistered",
+      "msg": "Agent already registered"
+    },
+    {
+      "code": 12043,
+      "name": "Unauthorized",
+      "msg": "Authorization failed - signer is not the agent"
+    },
+    {
+      "code": 12044,
+      "name": "PolicyEpochOverflow",
+      "msg": "Policy epoch overflow"
+    },
+    {
+      "code": 12050,
+      "name": "InvalidAttestationType",
+      "msg": "Invalid attestation type"
+    },
+    {
+      "code": 12051,
+      "name": "AttestationTooShort",
+      "msg": "Attestation too short"
+    },
+    {
+      "code": 12052,
+      "name": "InvalidAttestationFormat",
+      "msg": "Invalid attestation format"
+    },
+    {
+      "code": 12053,
+      "name": "InvalidAttestationDocument",
+      "msg": "Invalid attestation document"
+    },
+    {
+      "code": 12054,
+      "name": "AttestationMissingUserData",
+      "msg": "Attestation missing user data"
+    },
+    {
+      "code": 12055,
+      "name": "AttestationUserDataMismatch",
+      "msg": "Attestation user data mismatch - policy commitment not found"
+    },
+    {
+      "code": 12056,
+      "name": "AttestationExpired",
+      "msg": "Attestation expired or not yet valid"
+    },
+    {
+      "code": 12057,
+      "name": "UnsupportedAttestationVersion",
+      "msg": "Unsupported attestation version"
+    },
+    {
+      "code": 12058,
+      "name": "CertificateChainVerificationFailed",
+      "msg": "Certificate chain verification failed"
+    },
+    {
+      "code": 12059,
+      "name": "CoseSignatureVerificationFailed",
+      "msg": "COSE signature verification failed"
+    },
+    {
+      "code": 12060,
+      "name": "PcrMeasurementNotAllowed",
+      "msg": "PCR measurement not in allowlist"
+    },
+    {
+      "code": 12061,
+      "name": "AttestationCommitmentMismatch",
+      "msg": "Attestation commitment mismatch - attestation does not bind to expected policy commitment"
+    },
+    {
+      "code": 12070,
+      "name": "InsufficientComputeBudget",
+      "msg": "Insufficient compute budget - need at least 1,400,000 CUs for Groth16 verification"
+    },
+    {
+      "code": 12071,
+      "name": "ComputeMeterUnavailable",
+      "msg": "Compute meter unavailable"
+    },
+    {
+      "code": 12080,
+      "name": "PolicyExpired",
+      "msg": "Policy expired"
+    },
+    {
+      "code": 12081,
+      "name": "InvalidPolicyCommitment",
+      "msg": "Invalid policy commitment"
+    },
+    {
+      "code": 12082,
+      "name": "Paused",
+      "msg": "Verifier is paused"
+    },
+    {
+      "code": 12083,
+      "name": "ProofExpired",
+      "msg": "Proof expired — committed expiry timestamp is in the past"
+    },
+    {
+      "code": 12084,
+      "name": "ImageIdMismatch",
+      "msg": "Circuit image_id mismatch — proof generated with different circuit version"
+    },
+    {
+      "code": 12085,
+      "name": "VkIntegrityFailed",
+      "msg": "Verifying key integrity check failed"
+    },
+    {
+      "code": 12090,
+      "name": "DevModeNotAllowed",
+      "msg": "Dev mode not allowed in production"
+    },
+    {
+      "code": 12091,
+      "name": "NotImplemented",
+      "msg": "Feature not yet implemented"
+    },
+    {
+      "code": 12100,
+      "name": "VkNotInitialized",
+      "msg": "VerifierVk PDA is uninitialized; rotate via multisig before verifying"
+    },
+    {
+      "code": 12101,
+      "name": "TimelockNotElapsed",
+      "msg": "VK timelock has not elapsed (24h required between propose and execute)"
+    },
+    {
+      "code": 12102,
+      "name": "InsufficientApprovals",
+      "msg": "Insufficient multisig approvals to execute VK update"
+    },
+    {
+      "code": 12103,
+      "name": "InvalidMultisigConfig",
+      "msg": "Invalid multisig configuration"
+    },
+    {
+      "code": 12104,
+      "name": "NotAMultisigSigner",
+      "msg": "Signer is not a member of the VK multisig"
+    },
+    {
+      "code": 12105,
+      "name": "PendingUpdateExists",
+      "msg": "A VK update is already pending; execute or wait for it to clear"
+    },
+    {
+      "code": 12106,
+      "name": "NoPendingUpdate",
+      "msg": "No pending VK update to approve or execute"
+    },
+    {
+      "code": 12107,
+      "name": "AlreadyApproved",
+      "msg": "Signer has already approved this pending update"
+    },
+    {
+      "code": 12108,
+      "name": "ProverVersionTooLong",
+      "msg": "prover_version exceeds maximum length"
+    },
+    {
+      "code": 12109,
+      "name": "RealVkUnavailable",
+      "msg": "Real VK is not baked in; rebuild extract-vk against a real proof"
+    },
+    {
+      "code": 12114,
+      "name": "InsufficientRuleCoverage",
+      "msg": "Circuit rule bitmap is missing required rule(s) — proof under-covered"
+    },
+    {
+      "code": 12115,
+      "name": "CircuitFailure",
+      "msg": "Circuit reported a policy-rule failure (see CircuitFailureCode)"
+    },
+    {
+      "code": 12116,
+      "name": "InvalidDelegatorSignature",
+      "msg": "Delegator signature missing or invalid"
+    },
+    {
+      "code": 12117,
+      "name": "AttestedTimestampDriftTooLarge",
+      "msg": "Attested timestamp drift vs Clock exceeds ±300s — proof rejected"
+    },
+    {
+      "code": 12110,
+      "name": "InvalidAuditRoot",
+      "msg": "Audit root must not be all-zeros"
+    },
+    {
+      "code": 12111,
+      "name": "AuditRootStale",
+      "msg": "Audit root anchored_at timestamp drift exceeds 5 minutes vs Clock"
+    },
+    {
+      "code": 12112,
+      "name": "AuditSequenceMonotonicViolation",
+      "msg": "Audit sequence_high must monotonically increase across commits"
+    },
+    {
+      "code": 12113,
+      "name": "AuditAnchorOverflow",
+      "msg": "Audit anchor count overflowed u64"
+    }
+  ],
+  "address": "G5RnXgNZYiS4NJey6JzyxTLvPPPUMqUDL7wg6nqaMD3g",
+  "metadata": {
+    "address": "G5RnXgNZYiS4NJey6JzyxTLvPPPUMqUDL7wg6nqaMD3g"
+  }
+}
