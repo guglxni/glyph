@@ -23,7 +23,7 @@ example below.
 
 ## Hosted web demo
 
-- **Live demo:** `<WEB_DEMO_URL>`
+- **Live demo:** https://web-lovat-seven-23.vercel.app
 
 ## Multi-protocol demo
 
