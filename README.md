@@ -14,7 +14,7 @@
 [![ZK](https://img.shields.io/badge/ZK-RISC%20Zero%20%E2%86%92%20Groth16%20BN254-8A2BE2)]()
 [![Formal Verification](https://img.shields.io/badge/Lean%204-19%20theorems%20%E2%9C%93-orange)]()
 
-[Live Demo](https://projectglyph.xyz) · [Devnet Program](https://explorer.solana.com/address/G5RnXgNZYiS4NJey6JzyxTLvPPPUMqUDL7wg6nqaMD3g?cluster=devnet) · [Architecture](docs/architecture.md) · [Demo Guide](docs/DEMO.md) · [Research Foundation](#-research-foundation)
+[Live Demo](https://projectglyph.xyz) · [Demo Video](https://drive.google.com/drive/folders/1s5UjRRWDIA0-PLNg3Pj5th81dS7bu_Op?usp=share_link) · [Devnet Program](https://explorer.solana.com/address/G5RnXgNZYiS4NJey6JzyxTLvPPPUMqUDL7wg6nqaMD3g?cluster=devnet) · [Architecture](docs/architecture.md) · [Demo Guide](docs/DEMO.md) · [Research Foundation](#-research-foundation)
 
 </div>
 
@@ -246,6 +246,13 @@ Verify discovery locally:
 npx skills list --json
 ```
 
+Install or inspect it directly from GitHub with `npx skills add`:
+
+```bash
+npx skills add https://github.com/guglxni/glyph --skill glyph
+npx skills add https://github.com/guglxni/glyph --list
+```
+
 ---
 
 ## Policy DSL — 9 rules
@@ -317,7 +324,7 @@ reference: [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md).
 | Item | URL |
 |------|-----|
 | **Live web demo** | https://projectglyph.xyz |
-| **Demo video** | `<DEMO_VIDEO_URL>` _(add your Loom link)_ |
+| **Demo video** | https://drive.google.com/drive/folders/1s5UjRRWDIA0-PLNg3Pj5th81dS7bu_Op?usp=share_link |
 
 > **`verify_and_execute` scope (honest):** steps 1–6 above are live on devnet with real
 > txs. The CI proof-generation path now completes, but the final proof has not yet been

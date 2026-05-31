@@ -118,6 +118,10 @@ const THESIS_PILLARS = [
 
 const AGENT_SKILL_ITEMS = [
   {
+    k: "Global discovery",
+    v: "installable from GitHub with npx skills add https://github.com/guglxni/glyph --skill glyph",
+  },
+  {
     k: "Thesis map",
     v: "keeps agents anchored to arXiv:2509.00085 and the trust-stack mapping",
   },
@@ -612,6 +616,9 @@ export default function Page() {
                   compatible agent how to work on GLYPH without weakening the policy, proof,
                   verifier, wallet delegation, or arXiv:2509.00085 alignment guarantees.
                 </p>
+                <div className="mt-5 break-all rounded-xl border border-white/[0.08] bg-black/25 px-4 py-3 font-mono text-xs text-white/65 sm:break-normal">
+                  npx skills add https://github.com/guglxni/glyph --skill glyph
+                </div>
                 <div className="mt-6 flex flex-wrap gap-3">
                   <Pill tone="glyph">npx skills compatible</Pill>
                   <Pill tone="neutral">agent-agnostic instructions</Pill>
@@ -650,9 +657,9 @@ export default function Page() {
                   </div>
                   <div className="border-t border-white/[0.06] px-5 py-4">
                     <p className="font-mono text-2xs leading-relaxed text-white/42">
-                      Verify locally: <span className="text-white/65">npx skills list --json</span>{" "}
-                      should discover <span className="text-glyph-200">glyph</span> from{" "}
-                      <span className="text-white/65">.agents/skills/glyph/SKILL.md</span>.
+                      Verify locally: <span className="text-white/65">npx skills add https://github.com/guglxni/glyph --list</span>{" "}
+                      finds <span className="text-glyph-200">glyph</span>, and{" "}
+                      <span className="text-white/65">npx skills list --json</span> shows it after install.
                     </p>
                   </div>
                 </div>
