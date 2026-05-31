@@ -9,6 +9,7 @@ const LINKS = [
   { href: "#compiler", label: "NL → Policy" },
   { href: "#console", label: "Demo" },
   { href: "#onchain", label: "On-chain" },
+  { href: "#agent-skill", label: "Agent skill" },
   { href: "#trust", label: "Trust stack" },
 ];
 

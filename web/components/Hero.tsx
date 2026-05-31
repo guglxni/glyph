@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { EXPLORER_PROGRAM, GITHUB_URL } from "@/lib/data";
 import { BlurWords, DecryptedText, GradientText, ReactBitsBackdrop, SignalRail, SpotlightCard } from "./ReactBitsDecor";
-import { LiveDot } from "./ui";
+import { LiveDot, Pill } from "./ui";
 
 export function Hero() {
   return (
@@ -66,6 +66,19 @@ export function Hero() {
           </a>
         </motion.div>
 
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.28 }}
+          className="mt-5 flex flex-wrap items-center justify-center gap-2"
+        >
+          <a href="#agent-skill" className="transition-opacity hover:opacity-85">
+            <Pill tone="glyph">includes GLYPH agent skill</Pill>
+          </a>
+          <Pill tone="neutral">npx skills compatible</Pill>
+          <Pill tone="zk">agent-agnostic repo guide</Pill>
+        </motion.div>
+
         {/* horizontal vs vertical strip */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -77,6 +90,7 @@ export function Hero() {
             {[
               { k: "Same proofs", v: "one RISC Zero circuit" },
               { k: "Same policy engine", v: "one declarative DSL" },
+              { k: "Same agent skill", v: "one repo operating model" },
               { k: "Different programs", v: "System · Token · Memo · …" },
             ].map((c, i) => (
               <div

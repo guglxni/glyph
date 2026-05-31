@@ -593,7 +593,7 @@ export default function Page() {
         </section>
 
         {/* ── Agent skill ── */}
-        <section className="relative border-y border-white/[0.05] bg-ink-900/40 py-24 sm:py-32">
+        <section id="agent-skill" className="relative scroll-mt-24 border-y border-white/[0.05] bg-ink-900/40 py-24 sm:py-32">
           <div className="container-glyph">
             <div className="grid gap-12 lg:grid-cols-[minmax(0,0.85fr)_1fr] lg:items-center">
               <Reveal>
@@ -602,18 +602,34 @@ export default function Page() {
                   Agent skill
                 </span>
                 <h2 className="mt-4 text-balance text-3xl font-semibold tracking-tightest text-white sm:text-4xl">
-                  GLYPH ships with an agent-readable implementation guide
+                  GLYPH ships with a committed agent skill
                 </h2>
                 <p className="mt-4 text-base leading-relaxed text-white/55 sm:text-lg">
                   The repo includes a project-scoped{" "}
                   <span className="font-mono text-glyph-200">glyph</span> skill for coding
-                  agents. It teaches any compatible agent how to work on GLYPH without weakening
-                  the policy, proof, verifier, or research-alignment guarantees.
+                  agents. It is part of the public repository, discoverable with{" "}
+                  <span className="font-mono text-white/80">npx skills</span>, and tells any
+                  compatible agent how to work on GLYPH without weakening the policy, proof,
+                  verifier, wallet delegation, or arXiv:2509.00085 alignment guarantees.
                 </p>
                 <div className="mt-6 flex flex-wrap gap-3">
                   <Pill tone="glyph">npx skills compatible</Pill>
                   <Pill tone="neutral">agent-agnostic instructions</Pill>
                   <Pill tone="zk">research-aware guardrails</Pill>
+                </div>
+                <div className="mt-7 flex flex-wrap gap-3">
+                  <a
+                    href="https://github.com/safishamsi/glyph/tree/main/.agents/skills/glyph"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="btn-primary"
+                  >
+                    View the skill
+                    <span aria-hidden>↗</span>
+                  </a>
+                  <a href="#compiler" className="btn-ghost">
+                    Try wallet-bound policy signing
+                  </a>
                 </div>
               </Reveal>
 
@@ -634,8 +650,9 @@ export default function Page() {
                   </div>
                   <div className="border-t border-white/[0.06] px-5 py-4">
                     <p className="font-mono text-2xs leading-relaxed text-white/42">
-                      Verify locally with <span className="text-white/65">npx skills list --json</span>;
-                      the skill is committed with the repo, not kept as a private handoff note.
+                      Verify locally: <span className="text-white/65">npx skills list --json</span>{" "}
+                      should discover <span className="text-glyph-200">glyph</span> from{" "}
+                      <span className="text-white/65">.agents/skills/glyph/SKILL.md</span>.
                     </p>
                   </div>
                 </div>
