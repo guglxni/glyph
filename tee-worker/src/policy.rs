@@ -194,12 +194,14 @@ impl PolicyEngine {
         let date_key = date_dt.format("%Y-%m-%d").to_string();
         let current = *self.daily_volume_tracker.get(&date_key).unwrap_or(&0);
         // Closes T22: explicit overflow rejection instead of saturating.
-        let proposed = current.checked_add(intent.constraints.max_lamports).ok_or_else(|| {
-            PolicyViolation::new(
-                PolicyRule::MaxDailyVolumeLamports,
-                "daily volume would overflow u64",
-            )
-        })?;
+        let proposed = current
+            .checked_add(intent.constraints.max_lamports)
+            .ok_or_else(|| {
+                PolicyViolation::new(
+                    PolicyRule::MaxDailyVolumeLamports,
+                    "daily volume would overflow u64",
+                )
+            })?;
         if proposed > rules.max_daily_volume_lamports {
             return Err(PolicyViolation::new(
                 PolicyRule::MaxDailyVolumeLamports,
@@ -256,9 +258,7 @@ impl PolicyEngine {
         }
 
         // Rule 8: RequireSignerPresent
-        if rules.require_signer_present
-            && !intent.action.accounts.iter().any(|a| a.is_signer)
-        {
+        if rules.require_signer_present && !intent.action.accounts.iter().any(|a| a.is_signer) {
             return Err(PolicyViolation::new(
                 PolicyRule::RequireSignerPresent,
                 "no signer account present",
@@ -272,10 +272,7 @@ impl PolicyEngine {
             )
         })?;
         let nonce = decode_nonce(&intent.nonce).map_err(|_| {
-            PolicyViolation::new(
-                PolicyRule::RequireSignerPresent,
-                "nonce not 32 bytes",
-            )
+            PolicyViolation::new(PolicyRule::RequireSignerPresent, "nonce not 32 bytes")
         })?;
 
         Ok(CheckedIntent {
@@ -330,10 +327,7 @@ impl PolicyEngine {
     /// Backwards-compatible read-mutate combined evaluator. Used by existing
     /// unit tests; production callers should use `check_intent` +
     /// `commit_intent`.
-    pub fn evaluate_intent(
-        &mut self,
-        intent: &TransactionIntent,
-    ) -> Result<(), PolicyViolation> {
+    pub fn evaluate_intent(&mut self, intent: &TransactionIntent) -> Result<(), PolicyViolation> {
         let now = Utc::now().timestamp();
         let checked = self.check_intent(intent, now)?;
         self.commit_intent(checked)
@@ -359,12 +353,12 @@ impl PolicyEngine {
             }
         };
 
-        let unsealed = provider
-            .unseal(&sealed_data)
-            .unwrap_or_else(|e| panic!("volume file at {} failed to unseal: {}", path.display(), e));
+        let unsealed = provider.unseal(&sealed_data).unwrap_or_else(|e| {
+            panic!("volume file at {} failed to unseal: {}", path.display(), e)
+        });
 
-        let tracker: BTreeMap<String, u64> = serde_json::from_slice(&unsealed)
-            .unwrap_or_else(|e| {
+        let tracker: BTreeMap<String, u64> =
+            serde_json::from_slice(&unsealed).unwrap_or_else(|e| {
                 panic!(
                     "volume file at {} parsed as invalid JSON: {}",
                     path.display(),
@@ -388,8 +382,11 @@ impl PolicyEngine {
             if let Some(vol) = self.daily_volume_tracker.get(&today) {
                 snapshot.insert(today, *vol);
             }
-            let json = serde_json::to_vec(&snapshot).context("failed to serialize volume tracker")?;
-            let sealed = provider.seal(&json).context("failed to seal volume tracker")?;
+            let json =
+                serde_json::to_vec(&snapshot).context("failed to serialize volume tracker")?;
+            let sealed = provider
+                .seal(&json)
+                .context("failed to seal volume tracker")?;
             std::fs::write(path, sealed).context("failed to write sealed volume file")?;
         }
         Ok(())

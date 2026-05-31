@@ -22,11 +22,11 @@ fn main() {
 #[cfg(feature = "risc0")]
 fn main() -> anyhow::Result<()> {
     use anyhow::{anyhow, Context};
+    use glyph_circuit_host::{generate_proof, IntentExtras, GLYPH_CIRCUIT_ID};
     use glyph_common::{
         canonical_target_instruction_bytes, hash_policy, CanonicalAccountMeta, IntentPayload,
         Policy, PublicOutputs, TimeWindow,
     };
-    use glyph_circuit_host::{generate_proof, IntentExtras, GLYPH_CIRCUIT_ID};
 
     // ── Parse args ──────────────────────────────────────────────────────────
     let mut out_path = String::from("scripts/e2e-devnet/proof.json");
@@ -44,7 +44,9 @@ fn main() -> anyhow::Result<()> {
         match a.as_str() {
             "--out" => out_path = args.next().context("--out needs value")?,
             "--agent" => agent_hex = Some(args.next().context("--agent needs value")?),
-            "--agent-keypair" => agent_keypair = Some(args.next().context("--agent-keypair needs value")?),
+            "--agent-keypair" => {
+                agent_keypair = Some(args.next().context("--agent-keypair needs value")?)
+            }
             "--from" => from_hex = Some(args.next().context("--from needs value")?),
             "--to" => to_hex = Some(args.next().context("--to needs value")?),
             "--nonce" => nonce_hex = Some(args.next().context("--nonce needs value")?),
@@ -112,8 +114,16 @@ fn main() -> anyhow::Result<()> {
 
     // Transfer accounts: [from (signer, writable), to (writable)].
     let accounts = vec![
-        CanonicalAccountMeta { pubkey: from, is_signer: true, is_writable: true },
-        CanonicalAccountMeta { pubkey: to, is_signer: false, is_writable: true },
+        CanonicalAccountMeta {
+            pubkey: from,
+            is_signer: true,
+            is_writable: true,
+        },
+        CanonicalAccountMeta {
+            pubkey: to,
+            is_signer: false,
+            is_writable: true,
+        },
     ];
 
     // The bytes the circuit hashes as tx_hash MUST equal what the on-chain
@@ -128,7 +138,10 @@ fn main() -> anyhow::Result<()> {
         version: 1,
         max_lamports_per_tx: 1_000_000_000,
         allowed_programs: vec![system_program, token_program, memo_program],
-        time_window: Some(TimeWindow { start_hour_utc: 0, end_hour_utc: 23 }),
+        time_window: Some(TimeWindow {
+            start_hour_utc: 0,
+            end_hour_utc: 23,
+        }),
         max_daily_volume_lamports: 5_000_000_000,
         max_slippage_bps: None,
         allowed_token_mints: None,
@@ -154,8 +167,14 @@ fn main() -> anyhow::Result<()> {
         mint_inclusion_proofs: Vec::new(),
     };
 
-    eprintln!("[gen_proof] image_id (from compiled guest) = {:08x?}", GLYPH_CIRCUIT_ID);
-    eprintln!("[gen_proof] policy_commitment = {}", hex::encode(policy_commitment));
+    eprintln!(
+        "[gen_proof] image_id (from compiled guest) = {:08x?}",
+        GLYPH_CIRCUIT_ID
+    );
+    eprintln!(
+        "[gen_proof] policy_commitment = {}",
+        hex::encode(policy_commitment)
+    );
     eprintln!("[gen_proof] generating REAL Groth16 proof (this can take minutes)...");
     let t0 = std::time::Instant::now();
 
@@ -169,14 +188,20 @@ fn main() -> anyhow::Result<()> {
     )
     .context("real proof generation failed")?;
     let elapsed = t0.elapsed();
-    eprintln!("[gen_proof] proof generated in {:.1}s", elapsed.as_secs_f64());
+    eprintln!(
+        "[gen_proof] proof generated in {:.1}s",
+        elapsed.as_secs_f64()
+    );
 
     // Journal bytes (borsh PublicOutputs) — the on-chain verifier decodes these.
     let journal_bytes = receipt.receipt.journal.bytes.clone();
-    let decoded: PublicOutputs = borsh::BorshDeserialize::try_from_slice(&journal_bytes)
-        .context("decode journal")?;
+    let decoded: PublicOutputs =
+        borsh::BorshDeserialize::try_from_slice(&journal_bytes).context("decode journal")?;
     if decoded.failure_code != 0 {
-        return Err(anyhow!("circuit reported failure_code={}", decoded.failure_code));
+        return Err(anyhow!(
+            "circuit reported failure_code={}",
+            decoded.failure_code
+        ));
     }
 
     // Extract Groth16 seal points (raw 256-byte seal).
