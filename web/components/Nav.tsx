@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { GITHUB_URL } from "@/lib/data";
+import { WalletButton } from "./WalletButton";
 
 const LINKS = [
   { href: "#flow", label: "How it works" },
+  { href: "#compiler", label: "NL → Policy" },
   { href: "#console", label: "Demo" },
   { href: "#onchain", label: "On-chain" },
   { href: "#trust", label: "Trust stack" },
-  { href: "#research", label: "Research" },
 ];
 
 export function Nav() {
@@ -53,12 +54,13 @@ export function Nav() {
             href={GITHUB_URL}
             target="_blank"
             rel="noreferrer"
-            className="hidden rounded-full border border-white/12 bg-white/[0.02] px-3.5 py-2 text-sm text-white/80 transition-colors hover:border-white/25 hover:bg-white/[0.06] sm:inline-flex"
+            className="hidden rounded-full border border-white/12 bg-white/[0.02] px-3.5 py-2 text-sm text-white/80 transition-colors hover:border-white/25 hover:bg-white/[0.06] lg:inline-flex"
           >
             GitHub ↗
           </a>
-          <a href="#console" className="btn-primary !px-4 !py-2 text-sm">
-            Try the demo
+          <WalletButton />
+          <a href="#compiler" className="btn-primary !px-4 !py-2 text-sm">
+            Try it live
           </a>
           <button
             onClick={() => setOpen((o) => !o)}

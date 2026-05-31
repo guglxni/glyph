@@ -2,7 +2,9 @@ import { FlowDiagram } from "@/components/FlowDiagram";
 import { Hero } from "@/components/Hero";
 import { Logo, Nav } from "@/components/Nav";
 import { OnChainStatus } from "@/components/OnChainStatus";
+import { PolicyCompiler } from "@/components/PolicyCompiler";
 import { PolicyConsole } from "@/components/PolicyConsole";
+import { WalletProvider } from "@/components/WalletProvider";
 import { Counter, Pill, Reveal, SectionHeading } from "@/components/ui";
 import {
   EXPLORER_DEPLOY_TX,
@@ -89,7 +91,7 @@ const METRICS: { value: number; suffix?: string; label: string; pre?: string }[]
 
 export default function Page() {
   return (
-    <>
+    <WalletProvider>
       <Nav />
       <main>
         <Hero />
@@ -168,6 +170,34 @@ export default function Page() {
             <Reveal delay={0.1}>
               <div className="mt-12">
                 <FlowDiagram />
+              </div>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* ── NL → Policy compiler (live centerpiece) ── */}
+        <section
+          id="compiler"
+          className="relative scroll-mt-20 border-y border-white/[0.05] bg-gradient-to-b from-glyph/[0.03] to-transparent py-24 sm:py-32"
+        >
+          <div aria-hidden className="pointer-events-none absolute inset-0">
+            <div className="absolute left-1/2 top-0 h-[260px] w-[680px] -translate-x-1/2 rounded-full bg-glyph/[0.06] blur-[130px]" />
+          </div>
+          <div className="container-glyph relative">
+            <Reveal>
+              <SectionHeading
+                eyebrow="Live · bring your own LLM"
+                title={
+                  <>
+                    Author a policy in <span className="text-gradient">plain English</span>
+                  </>
+                }
+                intro="GLYPH's natural-language → policy DSL compiler, live. Describe what your agent may do; your own LLM (any OpenAI-compatible provider — OpenAI, Anthropic, Gemini, Groq, OpenRouter, xAI, Ollama, LM Studio, or a self-hosted LiteLLM proxy) compiles it to the canonical 9-rule policy. A deterministic schema guard clamps the output, then the real policy_commitment is computed in your browser — byte-for-byte identical to the Rust SDK — and you test intents against it. Connect a wallet to bind the policy to your own agent identity."
+              />
+            </Reveal>
+            <Reveal delay={0.1}>
+              <div className="mt-12">
+                <PolicyCompiler />
               </div>
             </Reveal>
           </div>
@@ -516,7 +546,7 @@ export default function Page() {
           </div>
         </div>
       </footer>
-    </>
+    </WalletProvider>
   );
 }
 
