@@ -48,9 +48,8 @@ zeroize = "1.7"
 hex = "0.4"
 base64 = "0.22"
 
-# Patch risc0-groth16 to remove the x86-only arch gate so the Docker-based
-# Groth16 prover can be used on arm64 hosts (Docker Desktop provides amd64
-# emulation via Rosetta). One-line change in docker.rs — is_x86_architecture()
-# returns true unconditionally; the prover container still runs x86 code.
-[patch.crates-io]
-risc0-groth16 = { path = "patches/risc0-groth16" }
+# NOTE: an earlier `[patch.crates-io] risc0-groth16` (removing the x86-only arch
+# gate to attempt Docker proving on arm64) was removed. On arm64 the Groth16
+# prover container's binaries SIGILL under Rosetta regardless, and on x86 — the
+# supported proving path used by .github/workflows/generate-proof.yml — the
+# upstream crate works natively, so no patch is needed.

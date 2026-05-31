@@ -146,6 +146,6 @@ through the on-chain BN254 pairing check with no further changes.
 |------|-------------|-------|
 | Native local prover (`gen_proof`, `RISC0_DEV_MODE=0`) on **x86_64 + Docker** | ✅ | The supported path; used by the CI workflow. |
 | Native local prover on **arm64 / Apple Silicon** | ❌ | `stark_to_snark` is x86-only; Rosetta 2 raises SIGILL in the prover binaries. |
-| Docker prover on arm64 via amd64 emulation | ❌ | Same SIGILL — the x86 binaries use instructions QEMU/Rosetta cannot emulate. A patch in `patches/risc0-groth16/` removes the arch gate, but the underlying binaries still fault. |
+| Docker prover on arm64 via amd64 emulation | ❌ | Removing the crate's x86 arch gate lets the Docker prover launch, but the prover binaries (`stark_verify`, `rapidsnark`) still SIGILL — they use x86 instructions QEMU/Rosetta cannot emulate. |
 | Hosted Bonsai service | ❌ | Retired by RISC Zero in December 2025. |
 | `RISC0_DEV_MODE=1` (fake receipt) | dev only | Used by the offline multi-protocol demo and unit tests; not a real proof. |
