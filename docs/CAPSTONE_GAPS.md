@@ -20,6 +20,8 @@ Last updated: 2026-05-31.
 | `.gitignore` not hardened | Excludes keypairs, `*.pem`, all `target/`, `node_modules`, `.lake/`, sessions, big assets | [`.gitignore`](../.gitignore) |
 | Stray unused-import warning | Removed; workspace builds 0 warnings | `tee-worker/src/subgroup_check.rs` |
 | Positioning narrative not documented | Canonical narrative doc added | [`POSITIONING.md`](POSITIONING.md) |
+| CI covering program + both SDKs | Hardened 5-job pipeline (workspace, on-chain program, sdk-rust, sdk-typescript, demo smoke test) | [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) |
+| VK-rotation multisig not initialized | Initialized on devnet (1-of-1 bootstrap; env-configurable m-of-n for mainnet) | PDA `9GQ9Wr9diSgiX6bZRwHcGtkJEAAzuWLwYWN2eQYwibRL`, tx [`BxwF1fFF…WuDC`](https://explorer.solana.com/tx/BxwF1fFFdfXPRx2tis9uXgPuXDLULdbERuBtR18e3Y6jcCAzBm7SJU2Z5Vph8wGjmkCzbRJ7HxaG9GBRhgrWuDC?cluster=devnet) |
 
 ## 🔧 In progress / tracked
 

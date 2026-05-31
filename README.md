@@ -270,6 +270,7 @@ require_signer_present     = true
 | **Deploy tx** | [`2pidHYhj…dE1tv`](https://explorer.solana.com/tx/2pidHYhjZxPmdw6tZnX4PW9j6yokU2HNvt3KAngu9GCt7GDe1j1vT2UVGCAY4RCoDLiGDrG6hHo4SF2KzPdE1tv?cluster=devnet) |
 | **Config PDA** | `2371q4QnMm33R3G4nXxxBkieHa8E47BDTBsmZoiurZpT` |
 | **VK PDA** | `5V28XTKVnQYVEG16DzoHfeHKXsYUqG41PxQJhxFyhjyd` |
+| **VK-rotation multisig PDA** | [`9GQ9Wr9diSgiX6bZRwHcGtkJEAAzuWLwYWN2eQYwibRL`](https://explorer.solana.com/address/9GQ9Wr9diSgiX6bZRwHcGtkJEAAzuWLwYWN2eQYwibRL?cluster=devnet) |
 | **On-chain `vk_hash`** | `109aba43…2f709707` (matches `vk_real.rs`, prover `risc0-zkvm 1.2.6`) |
 | **Live web demo** | https://web-lovat-seven-23.vercel.app |
 | **Demo video** | `<DEMO_VIDEO_URL>` _(add your Loom link)_ |
