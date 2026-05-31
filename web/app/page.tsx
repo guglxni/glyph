@@ -626,7 +626,7 @@ export default function Page() {
                 </div>
                 <div className="mt-7 flex flex-wrap gap-3">
                   <a
-                    href="https://github.com/safishamsi/glyph/tree/main/.agents/skills/glyph"
+                    href="https://github.com/guglxni/glyph/tree/main/.agents/skills/glyph"
                     target="_blank"
                     rel="noreferrer"
                     className="btn-primary"
