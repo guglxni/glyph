@@ -57,12 +57,22 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          set -euo pipefail
           curl -L https://risczero.com/install | bash
           echo "$HOME/.risc0/bin" >> "$GITHUB_PATH"
           export PATH="$HOME/.risc0/bin:$PATH"
+          # Install a matching cargo-risczero + the risc0 Rust guest toolchain
+          # (riscv32im). risc0-build's build script requires the rzup-managed
+          # Rust toolchain to compile the guest ELF — install it explicitly and
+          # fail loudly if it's missing.
+          rzup install rust 1.81.0
           rzup install cargo-risczero 1.2.6
-          rzup install rust
-          rzup show || true
+          rzup install r0vm 1.2.6 || true
+          rzup default rust 1.81.0 || true
+          rzup show
+          echo "--- verifying risc0 rust toolchain is discoverable ---"
+          rustup toolchain list | grep -i risc0 || \
+            ls "$HOME/.rustup/toolchains" || true
 
       - name: Pre-pull Groth16 prover image
         run: docker pull risczero/risc0-groth16-prover:v2024-05-17.1
