@@ -27,7 +27,7 @@ Last updated: 2026-05-31.
 
 | Gap | Status | Notes |
 |-----|--------|-------|
-| Full `register_agent → verify_and_execute` e2e on devnet | In progress | Needs a real RISC Zero proof + attestation; proven locally + by 114 tests. Devnet attempt under `scripts/e2e-devnet/`. |
+| Full `register_agent → verify_and_execute` e2e on devnet | Blocked (upstream/env) | Driver + real-proof generator are built (`scripts/e2e-devnet/`, `circuits/.../gen_proof.rs`) and the guest **image_id matches the seeded on-chain VK exactly** (`257cf779…0e05f183`), so an x86-produced proof would verify on-chain. The STARK→Groth16 wrap fails locally: RISC Zero's `stark_to_snark` is **x86-only** and this machine is arm64 (no Docker, no Bonsai key). To finish: run `gen_proof` on an x86 host (or via Docker / Bonsai `BONSAI_API_KEY`), then `cargo run --manifest-path scripts/e2e-devnet/Cargo.toml`. Policy logic itself is proven by the 114-test suite + the multi-protocol demo. |
 | CI covering on-chain program + both SDKs | In progress | Hardened `.github/workflows/ci.yml` (workspace, program, sdk-rust, sdk-typescript, demo smoke test). |
 | VK-rotation multisig on devnet | In progress | `initialize_vk_multisig` — devnet-acceptable to defer; mainnet requires Squads-style multisig per `DEPLOYMENT_KEYS.md`. |
 | TEE attestation wired on-chain | Deferred | Attestation verified off-chain today; per-vendor (SGX/Nitro/SEV) hardening is post-capstone. |
