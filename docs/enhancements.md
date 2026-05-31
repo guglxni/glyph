@@ -43,14 +43,25 @@ This document summarizes technical, security, and narrative enhancements discuss
 - Demo proof point: "One policy file, multiple target programs, same verification flow."
 
 ## OSS Evidence for Breadth
+These are the **target surface GLYPH guards**, not GLYPH-shipped integrations.
 - Agent tooling: https://github.com/sendaifun/solana-agent-kit
 - Perps: https://github.com/drift-labs/protocol-v2
 - Orderbook trading: https://github.com/Ellipsis-Labs/phoenix-v1
-- Prediction markets: https://github.com/roswelly/solana-prediction-market-smart-contract
+- Prediction markets: https://github.com/LemnLabs/solana-prediction-market-smart-contract
 - Privacy / ZK infra: https://github.com/lightprotocol/light-protocol
 - Core primitives: https://github.com/solana-program/token
 - Developer framework: https://github.com/coral-xyz/anchor
 - ZK proving stack: https://github.com/risc0/risc0
+
+## Status — Realized (2026-05-31)
+The narrative above is now backed by shipped artifacts:
+- **One-fits-all proven**: `examples/multi-protocol/` + `cargo run --example multi_protocol_demo`
+  shows one policy commitment guarding three unrelated programs (System / SPL Token / Memo)
+  and denying a fourth — see `docs/DEMO.md`.
+- **Live on devnet**: program `G5RnXgNZYiS4NJey6JzyxTLvPPPUMqUDL7wg6nqaMD3g`, real VK seeded.
+- **Hosted demo**: https://web-lovat-seven-23.vercel.app (in-browser commitment parity).
+- **Research basis documented**: arXiv:2509.00085 mapping in the README + `docs/POSITIONING.md`.
+- Full narrative: **`docs/POSITIONING.md`**. Status ledger: **`docs/CAPSTONE_GAPS.md`**.
 
 ## Evidence Sources (FOSS, prior research)
 - solana-program/token-2022 (confidential transfers)
