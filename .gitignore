@@ -26,6 +26,12 @@ web/node_modules/
 # Agent configuration directories
 .adal/
 .agents/
+!.agents/
+.agents/*
+!.agents/skills/
+.agents/skills/*
+!.agents/skills/glyph/
+!.agents/skills/glyph/**
 .augment/
 .claude/
 .codebuddy/

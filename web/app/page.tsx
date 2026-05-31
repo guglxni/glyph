@@ -97,12 +97,84 @@ const METRICS: { value: number; suffix?: string; label: string; pre?: string }[]
   { value: 6, label: "job CI pipeline" },
 ];
 
+const THESIS_PILLARS = [
+  {
+    k: "Delegation",
+    v: "human intent binds agent authority to a concrete policy commitment",
+  },
+  {
+    k: "Privacy",
+    v: "policy evaluation can remain inside a TEE while exposing only commitments",
+  },
+  {
+    k: "Verifiability",
+    v: "RISC Zero execution produces a journal that is proven and checked on-chain",
+  },
+  {
+    k: "Auditability",
+    v: "Solana records the verifier state, policy commitment, and replay-safe action trail",
+  },
+];
+
 export default function Page() {
   return (
     <WalletProvider>
       <Nav />
       <main>
         <Hero />
+
+        {/* ── Research implementation ── */}
+        <section className="relative border-y border-white/[0.05] bg-ink-900/45 py-20 sm:py-24">
+          <ReactBitsBackdrop intensity="section" />
+          <div className="container-glyph relative">
+            <Reveal>
+              <div className="grid gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-end">
+                <div>
+                  <span className="eyebrow">
+                    <span className="h-1 w-1 rounded-full bg-zk" />
+                    Implementation of arXiv:2509.00085v1
+                  </span>
+                  <h2 className="mt-4 max-w-3xl text-balance text-3xl font-semibold tracking-tightest text-white sm:text-5xl">
+                    The research paper, made executable.
+                  </h2>
+                  <p className="mt-4 max-w-2xl text-pretty text-base leading-relaxed text-white/58 sm:text-lg">
+                    GLYPH is the working Solana implementation of{" "}
+                    <span className="text-white/85">
+                      Private, Verifiable, and Auditable AI Systems
+                    </span>{" "}
+                    from the bundled research source{" "}
+                    <span className="font-mono text-zk-200">arXiv-2509.00085v1/</span>.
+                    It turns the thesis stack into a live path: authenticated delegation,
+                    BYOK policy compilation, TEE-side checks, RISC Zero proofs, and Groth16
+                    enforcement before agent actions execute.
+                  </p>
+                  <div className="mt-6 flex flex-wrap gap-3">
+                    <Pill tone="zk">paper source bundled in repo</Pill>
+                    <Pill tone="glyph">live Solana implementation</Pill>
+                    <Pill tone="neutral">agent-agnostic guardrails</Pill>
+                  </div>
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {THESIS_PILLARS.map((item, i) => (
+                    <Reveal key={item.k} delay={i * 0.05}>
+                      <SpotlightCard className="h-full p-5">
+                        <div className="flex items-center justify-between gap-3">
+                          <span className="font-mono text-2xs text-white/35">
+                            0{i + 1}
+                          </span>
+                          <span className="h-1.5 w-1.5 rounded-full bg-glyph" />
+                        </div>
+                        <h3 className="mt-4 text-base font-semibold text-white">{item.k}</h3>
+                        <p className="mt-2 text-sm leading-relaxed text-white/52">{item.v}</p>
+                      </SpotlightCard>
+                    </Reveal>
+                  ))}
+                </div>
+              </div>
+            </Reveal>
+          </div>
+        </section>
 
         {/* ── Problem ── */}
         <section className="relative py-24 sm:py-32">
@@ -442,7 +514,7 @@ export default function Page() {
                   Research credibility
                 </span>
                 <h2 className="mt-4 text-balance text-3xl font-semibold tracking-tightest text-white sm:text-4xl">
-                  A dissertation, shipped as live Solana infrastructure
+                  arXiv:2509.00085v1, shipped as live Solana infrastructure
                 </h2>
                 <p className="mt-4 text-base leading-relaxed text-white/55 sm:text-lg">
                   GLYPH implements the layered accountability architecture from Tobin South&rsquo;s
@@ -450,8 +522,11 @@ export default function Page() {
                   <span className="text-white/80">
                     &ldquo;Private, Verifiable, and Auditable AI Systems.&rdquo;
                   </span>{" "}
-                  The hardware → cryptography → consensus stack is that research, instantiated as
-                  enforceable on-chain infrastructure rather than a paper.
+                  The repository includes the full paper source at{" "}
+                  <span className="font-mono text-zk-200">arXiv-2509.00085v1/</span>, and this
+                  interface is the implementation layer: natural-language scope, authenticated
+                  delegation, confidential enforcement, succinct proof, and auditable on-chain
+                  execution.
                 </p>
                 <div className="mt-6 flex flex-wrap gap-3">
                   <a

@@ -1,0 +1,4 @@
+interface:
+  display_name: "GLYPH"
+  short_description: "Build and audit GLYPH verifiable agent guardrails"
+  default_prompt: "Use the GLYPH skill to explain, extend, or audit this repo. Start by identifying the touched layer, then preserve the policy, proof, verifier, and thesis-alignment invariants."
