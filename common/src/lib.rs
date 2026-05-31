@@ -7,6 +7,9 @@
 //!   * `glyph-verifier` (Solana BPF program) — to recompute the canonical
 //!     instruction hash on-chain when binding the proof to the next instruction.
 //!   * `glyph-sdk` (Rust) and downstream TS SDK (via test vectors).
+// CircuitFailureCode/PolicyConfig keep explicit Default impls for clarity.
+#![allow(clippy::derivable_impls)]
+
 //!
 //! All canonical encodings here are length-prefixed, fixed-order, little-endian.
 //! No JSON, no Borsh-derive on the wire — we hand-roll the byte layout so it
