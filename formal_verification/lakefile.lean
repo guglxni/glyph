@@ -1,12 +1,10 @@
 import Lake
 open Lake DSL
 
-require mathlib from git
-  "https://github.com/leanprover-community/mathlib4.git" @ "v4.15.0"
-
--- Use the local copy of qedgen's lean_solana support library
-require qedgenSupport from
-  "/Users/aaryanguglani/.agents/skills/qedgen/lean_solana"
+-- GLYPH on-chain verifier — formal verification (Lean 4).
+-- Vendored support library (no Mathlib dependency: the proofs use only the
+-- QEDGen.Solana model + core Lean, so `lake build` is fast and reproducible).
+require qedgenSupport from "lean_solana"
 
 package Proofs where
   leanOptions := #[
@@ -14,6 +12,5 @@ package Proofs where
     ⟨`pp.proofs.withType, false⟩
   ]
 
--- Build the proof library (no executable needed)
 @[default_target]
 lean_lib Proofs

@@ -11,7 +11,7 @@
 [![Live Demo](https://img.shields.io/badge/demo-live-success)](https://web-lovat-seven-23.vercel.app)
 [![Tests](https://img.shields.io/badge/tests-114%20passing-success)]()
 [![ZK](https://img.shields.io/badge/ZK-RISC%20Zero%20%E2%86%92%20Groth16%20BN254-8A2BE2)]()
-[![Formal Verification](https://img.shields.io/badge/Lean%204-9%20theorems-orange)]()
+[![Formal Verification](https://img.shields.io/badge/Lean%204-19%20theorems%20%E2%9C%93-orange)]()
 
 [Live Demo](https://web-lovat-seven-23.vercel.app) · [Devnet Program](https://explorer.solana.com/address/G5RnXgNZYiS4NJey6JzyxTLvPPPUMqUDL7wg6nqaMD3g?cluster=devnet) · [Architecture](docs/architecture.md) · [Demo Guide](docs/DEMO.md) · [Research Foundation](#-research-foundation)
 
@@ -409,7 +409,7 @@ flowchart TB
 | Rust SDK | Functional |
 | TypeScript SDK | Functional (build + tests) |
 | Web demo | **Live** |
-| Formal verification (Lean 4) | 9 theorems across 4 modules |
+| Formal verification (Lean 4) | **19 theorems, 6 modules, builds clean (~8s), 0 sorry** |
 | TEE attestation (prod) | Abstracted; per-vendor hardening pending |
 
 Full, honest gap ledger: [`docs/CAPSTONE_GAPS.md`](docs/CAPSTONE_GAPS.md).
@@ -441,7 +441,7 @@ Full, honest gap ledger: [`docs/CAPSTONE_GAPS.md`](docs/CAPSTONE_GAPS.md).
 
 - **114 passing tests** across the worker, common, and circuit-host crates (`cargo test --workspace`).
 - **Property-based tests** for circuit rule enforcement.
-- **Lean 4 formal verification** — 9 theorems across 4 modules (access control, replay protection, policy binding, instruction binding) in [`formal_verification/`](formal_verification/), mapped to 7 security goals.
+- **Lean 4 formal verification** — **19 theorems across 6 modules** (access control, replay protection, policy binding, instruction binding, freshness, audit chain) in [`formal_verification/`](formal_verification/), mapped to the 7 security goals in [`SPEC.md`](formal_verification/SPEC.md). **Reproducible & Mathlib-free:** `cd formal_verification && lake build` compiles from clean in ~8s, **0 `sorry` / 0 `admit`** (3 explicit cryptographic trust-boundary axioms). Validated with the [qedgen](https://github.com/qedgen/solana-skills) Lean-Solana skill.
 - **CI** builds and tests the full workspace, both SDKs, the on-chain program, and runs the multi-protocol demo as a smoke test (`.github/workflows/ci.yml`).
 
 ---
