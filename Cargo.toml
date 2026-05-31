@@ -47,3 +47,10 @@ chrono = { version = "0.4", features = ["serde"] }
 zeroize = "1.7"
 hex = "0.4"
 base64 = "0.22"
+
+# Patch risc0-groth16 to remove the x86-only arch gate so the Docker-based
+# Groth16 prover can be used on arm64 hosts (Docker Desktop provides amd64
+# emulation via Rosetta). One-line change in docker.rs — is_x86_architecture()
+# returns true unconditionally; the prover container still runs x86 code.
+[patch.crates-io]
+risc0-groth16 = { path = "patches/risc0-groth16" }
