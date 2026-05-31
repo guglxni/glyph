@@ -262,27 +262,56 @@ require_signer_present     = true
 
 ## Live deployment
 
-| Item | Value |
-|------|-------|
-| **Network** | Solana **devnet** |
-| **Program ID** | [`G5RnXgNZYiS4NJey6JzyxTLvPPPUMqUDL7wg6nqaMD3g`](https://explorer.solana.com/address/G5RnXgNZYiS4NJey6JzyxTLvPPPUMqUDL7wg6nqaMD3g?cluster=devnet) |
-| **Status** | Deployed · initialized · **real VK seeded** |
-| **Deploy tx** | [`2pidHYhj…dE1tv`](https://explorer.solana.com/tx/2pidHYhjZxPmdw6tZnX4PW9j6yokU2HNvt3KAngu9GCt7GDe1j1vT2UVGCAY4RCoDLiGDrG6hHo4SF2KzPdE1tv?cluster=devnet) |
-| **Config PDA** | `2371q4QnMm33R3G4nXxxBkieHa8E47BDTBsmZoiurZpT` |
-| **VK PDA** | `5V28XTKVnQYVEG16DzoHfeHKXsYUqG41PxQJhxFyhjyd` |
-| **VK-rotation multisig PDA** | [`9GQ9Wr9diSgiX6bZRwHcGtkJEAAzuWLwYWN2eQYwibRL`](https://explorer.solana.com/address/9GQ9Wr9diSgiX6bZRwHcGtkJEAAzuWLwYWN2eQYwibRL?cluster=devnet) |
-| **On-chain `vk_hash`** | `109aba43…2f709707` (matches `vk_real.rs`, prover `risc0-zkvm 1.2.6`) |
+GLYPH is **live on Solana devnet** with real, explorer-verifiable transactions. Full
+reference: [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md).
+
+### Program & accounts
+
+| Item | Address | Explorer |
+|------|---------|----------|
+| **Program** (`glyph_verifier`) | `G5RnXgNZYiS4NJey6JzyxTLvPPPUMqUDL7wg6nqaMD3g` | [↗](https://explorer.solana.com/address/G5RnXgNZYiS4NJey6JzyxTLvPPPUMqUDL7wg6nqaMD3g?cluster=devnet) |
+| **VerifierConfig PDA** (`b"config"`) | `2371q4QnMm33R3G4nXxxBkieHa8E47BDTBsmZoiurZpT` | [↗](https://explorer.solana.com/address/2371q4QnMm33R3G4nXxxBkieHa8E47BDTBsmZoiurZpT?cluster=devnet) |
+| **VK PDA** (`b"verifier_vk"`) | `5V28XTKVnQYVEG16DzoHfeHKXsYUqG41PxQJhxFyhjyd` | [↗](https://explorer.solana.com/address/5V28XTKVnQYVEG16DzoHfeHKXsYUqG41PxQJhxFyhjyd?cluster=devnet) |
+| **VK-rotation multisig PDA** | `9GQ9Wr9diSgiX6bZRwHcGtkJEAAzuWLwYWN2eQYwibRL` | [↗](https://explorer.solana.com/address/9GQ9Wr9diSgiX6bZRwHcGtkJEAAzuWLwYWN2eQYwibRL?cluster=devnet) |
+| **AgentRegistry PDA** (`b"agent" ‖ agent`) | `CHusKEt6yLTefqg81oDHRUgwj2RxUSugTcNCnRF8nSjx` | [↗](https://explorer.solana.com/address/CHusKEt6yLTefqg81oDHRUgwj2RxUSugTcNCnRF8nSjx?cluster=devnet) |
+| **Upgrade authority** | `8qj2WUdrdByn29yMLPYTwtXQfXCVTt9K1n6Dt7EP9qJ` | [↗](https://explorer.solana.com/address/8qj2WUdrdByn29yMLPYTwtXQfXCVTt9K1n6Dt7EP9qJ?cluster=devnet) |
+
+### On-chain transactions (all confirmed on devnet)
+
+| Step | Instruction | Tx signature | Explorer |
+|------|-------------|--------------|----------|
+| 1 | `deploy` (BPFLoaderUpgradeable) | `2pidHYhj…dE1tv` | [↗](https://explorer.solana.com/tx/2pidHYhjZxPmdw6tZnX4PW9j6yokU2HNvt3KAngu9GCt7GDe1j1vT2UVGCAY4RCoDLiGDrG6hHo4SF2KzPdE1tv?cluster=devnet) |
+| 2 | `initialize` (config) | `4fYZ5F7o…3AhfX` | [↗](https://explorer.solana.com/tx/4fYZ5F7ouvzAwNdPWiXoNgpQ8UHfrqA8DNG3p9AeUMvFcqMwo3upxTAygruCEwdpJBkKrMj8CvzLj75ZLJQ3AhfX?cluster=devnet) |
+| 3 | `initialize_verifier_vk` | `5AL4qKJh…hMzh` | [↗](https://explorer.solana.com/tx/5AL4qKJhAHjnLtGRNDaEvubZNnx2hcmJBMMwcbo3h1YC2SeHvxXYQfM1mTrPHaCGGGpKenL1fc1Wg1qmA6eHhMzh?cluster=devnet) |
+| 4 | `seed_vk` (real VK) | `5hJo9Jyj…gAvk` | [↗](https://explorer.solana.com/tx/5hJo9JyjdEKUqxwgFEusmxVVh9tR1kebJiRhwuKgb3zxXhPFUMV4uc6JxmAhJMrTT5ULiFMvxBYsRAzPEaK9gAvk?cluster=devnet) |
+| 5 | `initialize_vk_multisig` | `BxwF1fFF…WuDC` | [↗](https://explorer.solana.com/tx/BxwF1fFFdfXPRx2tis9uXgPuXDLULdbERuBtR18e3Y6jcCAzBm7SJU2Z5Vph8wGjmkCzbRJ7HxaG9GBRhgrWuDC?cluster=devnet) |
+| 6 | `register_agent` | `2Nfa9aZc…wDBLN` | [↗](https://explorer.solana.com/tx/2Nfa9aZc1Uv5DQg3qz4TY68dTFXWGqMuYB2NPf52XZhQepBsLM3Mecg4bKMEoGvWQdSc6JCMDDqXR17AvWKwDBLN?cluster=devnet) |
+| 7 | `verify_and_execute` | ⏳ pending Groth16 proof — see note | — |
+
+**Verifier state (read from chain):** real VK seeded, on-chain `vk_hash` =
+`109aba43…2f709707` (matches `vk_real.rs`, prover `risc0-zkvm 1.2.6`); program data length
+551,928 bytes; `image_id` pinned `257cf779…0e05f183`.
+
+### Off-chain artifacts
+
+| Item | URL |
+|------|-----|
 | **Live web demo** | https://web-lovat-seven-23.vercel.app |
 | **Demo video** | `<DEMO_VIDEO_URL>` _(add your Loom link)_ |
 
-> **Devnet scope (honest):** deploy + initialize + VK-seed + VK-rotation multisig +
-> **`register_agent`** are all live on devnet with real on-chain txs. The full round-trip
-> is 2 steps: `register_agent` ✅ (tx
-> [`2Nfa9aZc…wDBLN`](https://explorer.solana.com/tx/2Nfa9aZc1Uv5DQg3qz4TY68dTFXWGqMuYB2NPf52XZhQepBsLM3Mecg4bKMEoGvWQdSc6JCMDDqXR17AvWKwDBLN?cluster=devnet))
-> and `verify_and_execute` ⏳ (needs a Groth16 proof — arch-gate patch committed at
-> `patches/risc0-groth16/`; blocked by Rosetta 2 SIGILL in the upstream prover
-> container's binaries on arm64). Policy logic is proven by 114 tests + multi-protocol
-> demo + 19 Lean theorems. Status: [`docs/CAPSTONE_GAPS.md`](docs/CAPSTONE_GAPS.md).
+> **`verify_and_execute` scope (honest):** steps 1–6 above are live on devnet with real
+> txs. `verify_and_execute` requires a Groth16 proof, and **RISC Zero's docs confirm
+> "generating a Groth16 receipt locally requires an x86 architecture with Docker support"**
+> — Apple Silicon (this build host) is unsupported (risc0 issues
+> [#1520](https://github.com/risc0/risc0/issues/1520),
+> [#1749](https://github.com/risc0/risc0/issues/1749)); the hosted Bonsai service was
+> retired in Dec 2025. The proof pipeline is **fully built and wired** (the circuit's
+> `image_id` already matches the seeded VK byte-for-byte), and a CI workflow
+> [`.github/workflows/generate-proof.yml`](.github/workflows/generate-proof.yml) generates
+> the real proof on GitHub's x86_64 runners; the resulting `proof.json` lands
+> `verify_and_execute` via `scripts/e2e-devnet`. Policy correctness is independently proven
+> by 114 tests + the multi-protocol demo + 19 Lean theorems. Full status:
+> [`docs/CAPSTONE_GAPS.md`](docs/CAPSTONE_GAPS.md).
 
 ---
 
@@ -451,6 +480,7 @@ Full, honest gap ledger: [`docs/CAPSTONE_GAPS.md`](docs/CAPSTONE_GAPS.md).
 
 | Doc | Contents |
 |-----|----------|
+| [Deployment](docs/DEPLOYMENT.md) | Live devnet program, PDAs, tx history, reproduce steps |
 | [Architecture](docs/architecture.md) | Layers, data flow, trust boundaries |
 | [Policy DSL](docs/policy-dsl.md) | The 9 rules, canonical serialization, rotation |
 | [Demo guide](docs/DEMO.md) | Run the multi-protocol + devnet demos |

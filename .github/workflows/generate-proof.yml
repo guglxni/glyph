@@ -1,0 +1,96 @@
+name: Generate RISC Zero Proof (x86)
+
+# RISC Zero's Groth16 prover (stark_to_snark) only runs on x86_64 — Apple
+# Silicon is unsupported even via Docker (risc0 issues #1520, #1749), and the
+# hosted Bonsai service was retired in Dec 2025. GitHub's ubuntu-latest runners
+# are x86_64 with Docker preinstalled, so they can produce a real Groth16 proof
+# natively. This workflow generates the proof for the GLYPH multi-protocol
+# System-transfer intent and uploads proof.json as an artifact, which is then
+# used to land verify_and_execute on devnet.
+#
+# Trigger manually from the Actions tab (workflow_dispatch). Optionally pass an
+# agent pubkey (32-byte hex) so the proof's journal commits to a specific agent.
+
+on:
+  workflow_dispatch:
+    inputs:
+      agent_hex:
+        description: "Agent pubkey as 64-char hex (optional; default fixed test agent)"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+jobs:
+  prove:
+    name: Generate Groth16 proof on x86_64
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Confirm x86_64 host
+        run: |
+          uname -m
+          test "$(uname -m)" = "x86_64" || { echo "::error::not x86_64"; exit 1; }
+          docker --version
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry/index
+            ~/.cargo/registry/cache
+            ~/.cargo/git/db
+            target
+          key: ${{ runner.os }}-proof-${{ hashFiles('Cargo.lock') }}
+
+      - name: Install RISC Zero toolchain (rzup + cargo-risczero 1.2.x)
+        run: |
+          curl -L https://risczero.com/install | bash
+          echo "$HOME/.risc0/bin" >> "$GITHUB_PATH"
+          export PATH="$HOME/.risc0/bin:$PATH"
+          rzup install cargo-risczero 1.2.6
+          rzup install rust
+          rzup show || true
+
+      - name: Pre-pull Groth16 prover image
+        run: docker pull risczero/risc0-groth16-prover:v2024-05-17.1
+
+      - name: Generate real Groth16 proof (RISC0_DEV_MODE=0)
+        env:
+          RISC0_DEV_MODE: "0"
+          AGENT_HEX: ${{ github.event.inputs.agent_hex }}
+        run: |
+          export PATH="$HOME/.risc0/bin:$PATH"
+          ARGS="--out scripts/e2e-devnet/proof.json"
+          if [ -n "$AGENT_HEX" ]; then ARGS="$ARGS --agent $AGENT_HEX"; fi
+          echo "running: gen_proof $ARGS"
+          cargo run -p glyph-circuit-host --features risc0 --bin gen_proof -- $ARGS
+
+      - name: Show proof summary
+        run: |
+          echo "=== proof.json (image_id + commitment) ==="
+          python3 - <<'PY'
+          import json
+          p = json.load(open("scripts/e2e-devnet/proof.json"))
+          print("image_id_hex_be :", p.get("image_id_hex_be"))
+          print("policy_commit   :", p.get("policy_commitment_hex"))
+          print("prover_version  :", p.get("prover_version"))
+          print("proof_gen_secs  :", p.get("proof_gen_secs"))
+          print("failure_code    :", p.get("decoded_failure_code"))
+          # Expected seeded VK image_id:
+          print("EXPECTED        : 257cf7792829871556ee2220f81c7bacedbff0e0bf77ff46712697b00e05f183")
+          print("MATCH           :", p.get("image_id_hex_be") == "257cf7792829871556ee2220f81c7bacedbff0e0bf77ff46712697b00e05f183")
+          PY
+
+      - name: Upload proof artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: glyph-groth16-proof
+          path: scripts/e2e-devnet/proof.json
+          retention-days: 7
