@@ -132,24 +132,30 @@ export default function Page() {
                 <div>
                   <span className="eyebrow">
                     <span className="h-1 w-1 rounded-full bg-zk" />
-                    Implementation of arXiv:2509.00085v1
+                    Based on arXiv:2509.00085
                   </span>
                   <h2 className="mt-4 max-w-3xl text-balance text-3xl font-semibold tracking-tightest text-white sm:text-5xl">
-                    The research paper, made executable.
+                    A concrete implementation of Tobin South&rsquo;s AI trust thesis.
                   </h2>
                   <p className="mt-4 max-w-2xl text-pretty text-base leading-relaxed text-white/58 sm:text-lg">
-                    GLYPH is the working Solana implementation of{" "}
+                    GLYPH is a working Solana implementation inspired by the arXiv thesis{" "}
                     <span className="text-white/85">
                       Private, Verifiable, and Auditable AI Systems
                     </span>{" "}
-                    from the bundled research source{" "}
-                    <span className="font-mono text-zk-200">arXiv-2509.00085v1/</span>.
-                    It turns the thesis stack into a live path: authenticated delegation,
-                    BYOK policy compilation, TEE-side checks, RISC Zero proofs, and Groth16
-                    enforcement before agent actions execute.
+                    by Tobin South. The paper argues for AI systems that combine privacy,
+                    verifiability, auditability, confidential deployment, and scoped delegation;
+                    GLYPH instantiates that architecture for autonomous agents through BYOK policy
+                    compilation, TEE-side checks, RISC Zero proofs, and Groth16 enforcement.
                   </p>
                   <div className="mt-6 flex flex-wrap gap-3">
-                    <Pill tone="zk">paper source bundled in repo</Pill>
+                    <a
+                      href="https://arxiv.org/abs/2509.00085"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="btn-ghost"
+                    >
+                      Read arXiv:2509.00085 ↗
+                    </a>
                     <Pill tone="glyph">live Solana implementation</Pill>
                     <Pill tone="neutral">agent-agnostic guardrails</Pill>
                   </div>
@@ -409,9 +415,9 @@ export default function Page() {
                 <p className="text-sm leading-relaxed text-white/60">
                   The final <span className="font-mono text-amber-200">verify_and_execute</span>{" "}
                   step requires a Groth16 proof generated on x86 (Apple Silicon can&rsquo;t produce
-                  it locally). That step is CI-generated and currently pending — we don&rsquo;t
-                  claim the full round-trip has executed on-chain. Everything else shown here is
-                  live and real.
+                  it locally). The CI proof-generation path now completes; we still don&rsquo;t claim
+                  the full round-trip has executed on-chain until that proof is landed in a
+                  devnet transaction. Everything else shown here is live and real.
                   <a
                     href={EXPLORER_DEPLOY_TX}
                     target="_blank"
@@ -514,7 +520,7 @@ export default function Page() {
                   Research credibility
                 </span>
                 <h2 className="mt-4 text-balance text-3xl font-semibold tracking-tightest text-white sm:text-4xl">
-                  arXiv:2509.00085v1, shipped as live Solana infrastructure
+                  arXiv:2509.00085, shipped as live Solana infrastructure
                 </h2>
                 <p className="mt-4 text-base leading-relaxed text-white/55 sm:text-lg">
                   GLYPH implements the layered accountability architecture from Tobin South&rsquo;s
@@ -522,11 +528,11 @@ export default function Page() {
                   <span className="text-white/80">
                     &ldquo;Private, Verifiable, and Auditable AI Systems.&rdquo;
                   </span>{" "}
-                  The repository includes the full paper source at{" "}
-                  <span className="font-mono text-zk-200">arXiv-2509.00085v1/</span>, and this
-                  interface is the implementation layer: natural-language scope, authenticated
-                  delegation, confidential enforcement, succinct proof, and auditable on-chain
-                  execution.
+                  The paper is a PhD thesis in cryptography and security that combines
+                  zero-knowledge verifiable claims, confidential deployment with TEEs/MPC, and
+                  scoped delegation for autonomous and multi-agent AI. This interface is the
+                  implementation layer: natural-language scope, authenticated delegation,
+                  confidential enforcement, succinct proof, and auditable on-chain execution.
                 </p>
                 <div className="mt-6 flex flex-wrap gap-3">
                   <a

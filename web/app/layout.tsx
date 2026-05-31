@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
-const SITE = "https://web-lovat-seven-23.vercel.app";
+const SITE = "https://projectglyph.xyz";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE),
