@@ -188,6 +188,12 @@ fn default_runtime_mode() -> RuntimeMode {
 }
 
 /// Response sent back to the SDK client
+//
+// large_enum_variant: `Success` carries the full proof bundle (~504 bytes) while
+// `Error` is small. Boxing would change the JSON wire shape the SDK/tests
+// deserialize, so we accept the size difference — the enum is short-lived (one
+// per request) and never stored in bulk.
+#[allow(clippy::large_enum_variant)]
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(tag = "status")]
 pub enum WorkerResponse {
