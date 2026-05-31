@@ -1,5 +1,5 @@
-use base64::Engine;
 use anyhow::{Context, Result};
+use base64::Engine;
 use borsh::BorshSerialize;
 use sha2::{Digest, Sha256};
 
@@ -12,10 +12,12 @@ use crate::types::{GlyphProofBundle, TransactionIntent};
 
 /// Minimal Solana types to avoid solana-sdk dependency conflicts
 pub mod solana_types {
-    use serde::{Serialize, Deserialize};
-    use borsh::{BorshSerialize, BorshDeserialize};
+    use borsh::{BorshDeserialize, BorshSerialize};
+    use serde::{Deserialize, Serialize};
 
-    #[derive(Debug, Clone, Copy, PartialEq, Eq, BorshSerialize, BorshDeserialize, Serialize, Deserialize)]
+    #[derive(
+        Debug, Clone, Copy, PartialEq, Eq, BorshSerialize, BorshDeserialize, Serialize, Deserialize,
+    )]
     pub struct Pubkey([u8; 32]);
 
     impl std::str::FromStr for Pubkey {

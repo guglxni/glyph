@@ -132,7 +132,9 @@ pub struct CanonicalIntent {
 /// based on the code (so failure modes are diagnosable rather than indistinct
 /// `panic!`s).
 #[repr(u8)]
-#[derive(Clone, Copy, Debug, Serialize, Deserialize, BorshSerialize, BorshDeserialize, PartialEq, Eq)]
+#[derive(
+    Clone, Copy, Debug, Serialize, Deserialize, BorshSerialize, BorshDeserialize, PartialEq, Eq,
+)]
 pub enum CircuitFailureCode {
     None = 0,
     MaxLamportsExceeded = 1,
@@ -164,23 +166,22 @@ impl Default for CircuitFailureCode {
 // rules visible to the verifier and prevents a compromised worker from
 // silently downgrading.
 
-pub const RULE_BIT_MAX_LAMPORTS: u32          = 1 << 0;
-pub const RULE_BIT_ALLOWED_PROGRAMS: u32      = 1 << 1;
-pub const RULE_BIT_TIME_WINDOW: u32           = 1 << 2;
-pub const RULE_BIT_DAILY_VOLUME: u32          = 1 << 3;
-pub const RULE_BIT_SLIPPAGE: u32              = 1 << 4;
-pub const RULE_BIT_ALLOWED_TOKEN_MINTS: u32   = 1 << 5;
-pub const RULE_BIT_MAX_ACCOUNTS: u32          = 1 << 6;
-pub const RULE_BIT_REQUIRE_SIGNER: u32        = 1 << 7;
-pub const RULE_BIT_POLICY_EXPIRY: u32         = 1 << 8;
+pub const RULE_BIT_MAX_LAMPORTS: u32 = 1 << 0;
+pub const RULE_BIT_ALLOWED_PROGRAMS: u32 = 1 << 1;
+pub const RULE_BIT_TIME_WINDOW: u32 = 1 << 2;
+pub const RULE_BIT_DAILY_VOLUME: u32 = 1 << 3;
+pub const RULE_BIT_SLIPPAGE: u32 = 1 << 4;
+pub const RULE_BIT_ALLOWED_TOKEN_MINTS: u32 = 1 << 5;
+pub const RULE_BIT_MAX_ACCOUNTS: u32 = 1 << 6;
+pub const RULE_BIT_REQUIRE_SIGNER: u32 = 1 << 7;
+pub const RULE_BIT_POLICY_EXPIRY: u32 = 1 << 8;
 
 /// Default required bitmap: all 8 stateless rules + `time_window`,
 /// `daily_volume`, `allowed_token_mints` (the previously TEE-side rules now
 /// in-circuit). The on-chain verifier compares
 /// `(public_outputs.circuit_rule_bitmap & RULE_REQUIRED_BITMAP) ==
 ///  RULE_REQUIRED_BITMAP` and rejects on mismatch.
-pub const RULE_REQUIRED_BITMAP: u32 =
-      RULE_BIT_MAX_LAMPORTS
+pub const RULE_REQUIRED_BITMAP: u32 = RULE_BIT_MAX_LAMPORTS
     | RULE_BIT_ALLOWED_PROGRAMS
     | RULE_BIT_TIME_WINDOW
     | RULE_BIT_DAILY_VOLUME
@@ -383,7 +384,11 @@ pub fn hash_target_instruction(
     accounts: &[CanonicalAccountMeta],
     data: &[u8],
 ) -> [u8; 32] {
-    sha256(&canonical_target_instruction_bytes(target_program, accounts, data))
+    sha256(&canonical_target_instruction_bytes(
+        target_program,
+        accounts,
+        data,
+    ))
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -544,7 +549,11 @@ pub fn build_mint_merkle_root(mints: &[[u8; 32]]) -> [u8; 32] {
         let mut i = 0;
         while i < layer.len() {
             let left = layer[i];
-            let right = if i + 1 < layer.len() { layer[i + 1] } else { layer[i] };
+            let right = if i + 1 < layer.len() {
+                layer[i + 1]
+            } else {
+                layer[i]
+            };
             next.push(merkle_internal_hash(&left, &right));
             i += 2;
         }
@@ -565,7 +574,11 @@ pub fn build_mint_merkle_path(mint: &[u8; 32], mints: &[[u8; 32]]) -> Option<Mer
     while layer.len() > 1 {
         let sibling_idx = if idx % 2 == 0 {
             // current is left; sibling is right (or self if odd-padded).
-            if idx + 1 < layer.len() { idx + 1 } else { idx }
+            if idx + 1 < layer.len() {
+                idx + 1
+            } else {
+                idx
+            }
         } else {
             idx - 1
         };
@@ -577,7 +590,11 @@ pub fn build_mint_merkle_path(mint: &[u8; 32], mints: &[[u8; 32]]) -> Option<Mer
         let mut i = 0;
         while i < layer.len() {
             let left = layer[i];
-            let right = if i + 1 < layer.len() { layer[i + 1] } else { layer[i] };
+            let right = if i + 1 < layer.len() {
+                layer[i + 1]
+            } else {
+                layer[i]
+            };
             next.push(merkle_internal_hash(&left, &right));
             i += 2;
         }
@@ -707,7 +724,10 @@ mod tests {
         let mints = vec![[1u8; 32], [2u8; 32], [3u8; 32]];
         let mut shuffled = mints.clone();
         shuffled.reverse();
-        assert_eq!(build_mint_merkle_root(&mints), build_mint_merkle_root(&shuffled));
+        assert_eq!(
+            build_mint_merkle_root(&mints),
+            build_mint_merkle_root(&shuffled)
+        );
     }
 
     #[test]
@@ -716,7 +736,11 @@ mod tests {
         let root = build_mint_merkle_root(&mints);
         for mint in &mints {
             let path = build_mint_merkle_path(mint, &mints).expect("member must have path");
-            assert!(verify_mint_merkle_path(mint, &path, &root), "path for {:?} did not verify", mint);
+            assert!(
+                verify_mint_merkle_path(mint, &path, &root),
+                "path for {:?} did not verify",
+                mint
+            );
         }
     }
 

@@ -30,7 +30,9 @@ fn make_base_intent() -> TransactionIntent {
         constraints: IntentConstraints {
             max_lamports: 1_000_000_000,
             max_slippage_bps: Some(50),
-            allowed_tokens: Some(vec!["So11111111111111111111111111111111111111112".to_string()]),
+            allowed_tokens: Some(vec![
+                "So11111111111111111111111111111111111111112".to_string()
+            ]),
         },
         signature: "".to_string(),
     }
@@ -59,7 +61,6 @@ fn make_policy_toml(overrides: &str) -> String {
 
     lines.join("\n") + "\n"
 }
-
 
 #[test]
 fn test_max_lamports_pass() {
@@ -138,7 +139,9 @@ fn test_allowed_token_mints_pass() {
 
 #[test]
 fn test_allowed_token_mints_fail() {
-    let toml = make_policy_toml("allowed_token_mints = [\"EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v\"]");
+    let toml = make_policy_toml(
+        "allowed_token_mints = [\"EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v\"]",
+    );
     let mut engine = PolicyEngine::from_toml_str(&toml).unwrap();
     let mut intent = make_base_intent();
     intent.constraints.allowed_tokens = Some(vec!["BADTOKEN".to_string()]);
@@ -203,7 +206,10 @@ fn test_canonical_serialize_deterministic() {
 
     let bytes1 = canonical_serialize_policy(engine1.canonical_policy());
     let bytes2 = canonical_serialize_policy(engine2.canonical_policy());
-    assert_eq!(bytes1, bytes2, "canonical serialization must be deterministic");
+    assert_eq!(
+        bytes1, bytes2,
+        "canonical serialization must be deterministic"
+    );
 }
 
 // ── New tests: hardening from AUDIT_TEE T11/T17/T22/T24/T25/T26 ─────────────
@@ -213,14 +219,16 @@ fn test_canonical_serialize_deterministic() {
 /// passed.
 #[test]
 fn test_token_mint_rule_rejects_intent_with_missing_allowed_tokens() {
-    let toml = make_policy_toml(
-        "allowed_token_mints = [\"So11111111111111111111111111111111111111112\"]",
-    );
+    let toml =
+        make_policy_toml("allowed_token_mints = [\"So11111111111111111111111111111111111111112\"]");
     let mut engine = PolicyEngine::from_toml_str(&toml).unwrap();
     let mut intent = make_base_intent();
     intent.constraints.allowed_tokens = None; // <-- omitted
     let err = engine.evaluate_intent(&intent).unwrap_err();
-    assert_eq!(err.rule_id, 6, "expected rule 6 (AllowedTokenMints), got {err}");
+    assert_eq!(
+        err.rule_id, 6,
+        "expected rule 6 (AllowedTokenMints), got {err}"
+    );
 }
 
 /// T11 — `check_intent` is read-only: checks that succeed and are then
@@ -238,7 +246,9 @@ fn test_check_intent_is_read_only() {
     // and report `proposed_volume = 1_000_000_000`, proving the budget
     // never advanced.
     for _ in 0..10 {
-        let c = engine.check_intent(&intent, now).expect("check_intent must succeed");
+        let c = engine
+            .check_intent(&intent, now)
+            .expect("check_intent must succeed");
         assert_eq!(
             c.proposed_volume, 1_000_000_000,
             "check_intent must not advance the volume bucket"
@@ -250,7 +260,10 @@ fn test_check_intent_is_read_only() {
     let c2 = engine.check_intent(&intent, now).unwrap();
     engine.commit_intent(c2).unwrap();
     let err = engine.check_intent(&intent, now).unwrap_err();
-    assert_eq!(err.rule_id, 4, "expected rule 4 (MaxDailyVolume), got {err}");
+    assert_eq!(
+        err.rule_id, 4,
+        "expected rule 4 (MaxDailyVolume), got {err}"
+    );
 }
 
 /// T22 — `checked_add` overflow: a policy whose budget can be approached

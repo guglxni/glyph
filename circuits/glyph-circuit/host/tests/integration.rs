@@ -56,7 +56,11 @@ fn sha256(data: &[u8]) -> [u8; 32] {
     Sha256::digest(data).into()
 }
 
-fn full_public_outputs(policy: &Policy, intent: &IntentPayload, tx_hash: [u8; 32]) -> PublicOutputs {
+fn full_public_outputs(
+    policy: &Policy,
+    intent: &IntentPayload,
+    tx_hash: [u8; 32],
+) -> PublicOutputs {
     let policy_commitment = sha256(&canonical_serialize_policy(policy));
     let intent_hash = sha256(&glyph_common::canonical_intent_preimage(intent));
     PublicOutputs {
@@ -86,12 +90,13 @@ fn test_journal_encode_decode_round_trip() {
     let outputs = full_public_outputs(&policy, &intent, tx_hash);
 
     // Encode as borsh
-    let journal_bytes = borsh::BorshSerialize::try_to_vec(&outputs).expect("borsh serialization failed");
+    let journal_bytes =
+        borsh::BorshSerialize::try_to_vec(&outputs).expect("borsh serialization failed");
     assert!(!journal_bytes.is_empty());
 
     // Decode back
-    let decoded: PublicOutputs =
-        borsh::BorshDeserialize::try_from_slice(&journal_bytes).expect("borsh deserialization failed");
+    let decoded: PublicOutputs = borsh::BorshDeserialize::try_from_slice(&journal_bytes)
+        .expect("borsh deserialization failed");
 
     assert_eq!(decoded, outputs);
 }
@@ -281,19 +286,17 @@ mod prop {
             any::<bool>(),
         )
             .prop_map(
-                |(max_lamports, programs, max_daily, slippage, max_accts, require_signer)| {
-                    Policy {
-                        version: 1,
-                        max_lamports_per_tx: max_lamports,
-                        allowed_programs: programs,
-                        time_window: None,
-                        max_daily_volume_lamports: max_daily,
-                        max_slippage_bps: slippage,
-                        allowed_token_mints: None,
-                        max_accounts_per_tx: max_accts,
-                        require_signer_present: require_signer,
-                        expires_at: 0,
-                    }
+                |(max_lamports, programs, max_daily, slippage, max_accts, require_signer)| Policy {
+                    version: 1,
+                    max_lamports_per_tx: max_lamports,
+                    allowed_programs: programs,
+                    time_window: None,
+                    max_daily_volume_lamports: max_daily,
+                    max_slippage_bps: slippage,
+                    allowed_token_mints: None,
+                    max_accounts_per_tx: max_accts,
+                    require_signer_present: require_signer,
+                    expires_at: 0,
                 },
             )
     }
@@ -384,8 +387,9 @@ fn dev_mode_generate_proof_roundtrip() {
 
     match result {
         Ok((receipt, _public_inputs)) => {
-            let outputs: PublicOutputs = borsh::BorshDeserialize::try_from_slice(&receipt.receipt.journal.bytes)
-                .expect("failed to decode journal");
+            let outputs: PublicOutputs =
+                borsh::BorshDeserialize::try_from_slice(&receipt.receipt.journal.bytes)
+                    .expect("failed to decode journal");
 
             assert_eq!(outputs.agent_pubkey, intent.agent_pubkey);
             assert_eq!(outputs.nonce, intent.nonce);
@@ -398,7 +402,9 @@ fn dev_mode_generate_proof_roundtrip() {
             println!("✓ RISC0 dev-mode proof generated and journal decoded successfully");
         }
         Err(e) => {
-            println!("Note: proof generation failed (expected without full RISC Zero toolchain): {e}");
+            println!(
+                "Note: proof generation failed (expected without full RISC Zero toolchain): {e}"
+            );
         }
     }
 }

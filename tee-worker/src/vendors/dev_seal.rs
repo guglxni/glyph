@@ -54,7 +54,7 @@
 //!   `GLYPH_SEAL_PASSPHRASE`. For those, you need a real TEE.
 
 use anyhow::{anyhow, Result};
-use argon2::{Argon2, Algorithm, Version, Params};
+use argon2::{Algorithm, Argon2, Params, Version};
 use chacha20poly1305::{
     aead::{Aead, KeyInit, Payload},
     ChaCha20Poly1305, Key, Nonce,

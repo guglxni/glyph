@@ -28,11 +28,11 @@ use anyhow::{anyhow, Result};
 use chrono::Utc;
 use sha2::{Digest, Sha256};
 
-use crate::types::TeeVendor;
 use super::{
-    build_dev_attestation_quote, compute_bound_user_data, dev_seal,
-    parse_dev_attestation, AttestationEvidence, TeeProvider,
+    build_dev_attestation_quote, compute_bound_user_data, dev_seal, parse_dev_attestation,
+    AttestationEvidence, TeeProvider,
 };
+use crate::types::TeeVendor;
 
 const DEV_PREFIX: &[u8] = b"sev-snp-dev-attest:v1:";
 const REPORT_DATA_DOMAIN: &[u8] = b"GLYPH:sev-snp:report_data:v1:";
@@ -111,7 +111,11 @@ impl TeeProvider for SevProvider {
         }
     }
 
-    fn attest(&self, user_data: &[u8], policy_commitment: &[u8; 32]) -> Result<AttestationEvidence> {
+    fn attest(
+        &self,
+        user_data: &[u8],
+        policy_commitment: &[u8; 32],
+    ) -> Result<AttestationEvidence> {
         if self.is_real_enclave {
             return Err(anyhow!(
                 "SevProvider::attest — SNP_GET_REPORT not yet implemented. \

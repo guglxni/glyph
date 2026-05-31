@@ -250,7 +250,11 @@ impl PolicyViolation {
 
 impl std::fmt::Display for PolicyViolation {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "Policy violation (rule {}): {}", self.rule_id, self.reason)
+        write!(
+            f,
+            "Policy violation (rule {}): {}",
+            self.rule_id, self.reason
+        )
     }
 }
 

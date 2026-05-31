@@ -19,14 +19,12 @@
 //! )?;
 //! ```
 
-use anyhow::{anyhow, Result};
 #[cfg(feature = "risc0")]
 use anyhow::Context;
-use glyph_common::{
-    IntentPayload, MerklePath, Policy, PublicOutputs,
-};
+use anyhow::{anyhow, Result};
 #[cfg(feature = "risc0")]
 use glyph_common::{build_mint_merkle_root, canonical_serialize_policy, sha256};
+use glyph_common::{IntentPayload, MerklePath, Policy, PublicOutputs};
 use serde::{Deserialize, Serialize};
 
 pub mod types;
@@ -136,18 +134,12 @@ pub struct IntentExtras {
 /// - `BONSAI_API_KEY=<key>` — required when using Bonsai
 /// - `RISC0_DEV_MODE=1` — skip proving entirely for CI (no valid proof produced)
 pub fn generate_proof(
-    #[allow(unused_variables)]
-    intent: IntentPayload,
-    #[allow(unused_variables)]
-    policy: Policy,
-    #[allow(unused_variables)]
-    tx_bytes: Vec<u8>,
-    #[allow(unused_variables)]
-    attested_timestamp: u64,
-    #[allow(unused_variables)]
-    prior_daily_total: u64,
-    #[allow(unused_variables)]
-    extras: IntentExtras,
+    #[allow(unused_variables)] intent: IntentPayload,
+    #[allow(unused_variables)] policy: Policy,
+    #[allow(unused_variables)] tx_bytes: Vec<u8>,
+    #[allow(unused_variables)] attested_timestamp: u64,
+    #[allow(unused_variables)] prior_daily_total: u64,
+    #[allow(unused_variables)] extras: IntentExtras,
 ) -> Result<(Groth16Receipt, PublicInputs)> {
     #[cfg(not(feature = "risc0"))]
     {

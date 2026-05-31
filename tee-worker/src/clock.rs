@@ -157,7 +157,10 @@ pub struct MonotonicBackend {
 impl MonotonicBackend {
     pub fn from_clock(clock: &TrustedClock) -> Self {
         let (boot_inst, boot_unix) = clock.boot_anchor();
-        Self { boot_inst, boot_unix }
+        Self {
+            boot_inst,
+            boot_unix,
+        }
     }
 }
 
@@ -207,7 +210,10 @@ where
     pub fn new(server_pubkey: [u8; 32], fetch: F) -> Result<Self> {
         let server_pubkey = VerifyingKey::from_bytes(&server_pubkey)
             .map_err(|e| anyhow!("invalid Roughtime server pubkey: {e}"))?;
-        Ok(Self { server_pubkey, fetch })
+        Ok(Self {
+            server_pubkey,
+            fetch,
+        })
     }
 
     /// Domain-separated payload for signature verification. Public so an
@@ -225,8 +231,7 @@ where
     F: Fn() -> Result<(i64, Vec<u8>)> + Send + Sync,
 {
     fn refresh(&self) -> Result<(i64, ClockSource)> {
-        let (ts, sig_bytes) = (self.fetch)()
-            .context("roughtime fetch closure returned error")?;
+        let (ts, sig_bytes) = (self.fetch)().context("roughtime fetch closure returned error")?;
         if sig_bytes.len() != 64 {
             return Err(anyhow!(
                 "roughtime signature wrong length: {} (expected 64)",
@@ -263,7 +268,11 @@ mod tests {
         let t0 = clock.now().unwrap();
         std::thread::sleep(Duration::from_millis(1100));
         let t1 = clock.now().unwrap();
-        assert!(t1 >= t0 + 1, "expected at least 1s monotonic delta, got {}", t1 - t0);
+        assert!(
+            t1 >= t0 + 1,
+            "expected at least 1s monotonic delta, got {}",
+            t1 - t0
+        );
     }
 
     #[test]

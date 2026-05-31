@@ -115,7 +115,8 @@ impl WorkerMetrics {
         self.attestations_failed.fetch_add(1, Ordering::Relaxed);
     }
     pub fn record_attestation_stale_rejection(&self) {
-        self.attestation_stale_rejections.fetch_add(1, Ordering::Relaxed);
+        self.attestation_stale_rejections
+            .fetch_add(1, Ordering::Relaxed);
     }
     pub fn record_audit_entry_appended(&self) {
         self.audit_entries_appended.fetch_add(1, Ordering::Relaxed);
@@ -238,7 +239,10 @@ struct AuditResponse {
 async fn metrics_handler(State(s): State<ControlPlaneState>) -> impl IntoResponse {
     (
         StatusCode::OK,
-        [(axum::http::header::CONTENT_TYPE, "text/plain; version=0.0.4")],
+        [(
+            axum::http::header::CONTENT_TYPE,
+            "text/plain; version=0.0.4",
+        )],
         s.metrics.to_prometheus_text(),
     )
 }
@@ -294,8 +298,7 @@ pub fn build_router(state: ControlPlaneState) -> Router {
 /// unless `GLYPH_METRICS_PUBLIC_BIND=1` is set explicitly — the caller is
 /// responsible for that policy at startup.
 pub async fn spawn_control_plane(state: ControlPlaneState) -> std::io::Result<()> {
-    let addr = std::env::var("GLYPH_METRICS_ADDR")
-        .unwrap_or_else(|_| "127.0.0.1:9091".to_string());
+    let addr = std::env::var("GLYPH_METRICS_ADDR").unwrap_or_else(|_| "127.0.0.1:9091".to_string());
     let listener = tokio::net::TcpListener::bind(&addr).await?;
     tracing::info!(addr = %addr, "control plane listening (axum: /metrics, /healthz, /audit)");
     let router = build_router(state);

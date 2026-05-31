@@ -28,7 +28,7 @@ struct Certs {
 }
 
 fn mint_certs() -> Certs {
-    use rcgen::{CertificateParams, DistinguishedName, DnType, KeyPair, IsCa, BasicConstraints};
+    use rcgen::{BasicConstraints, CertificateParams, DistinguishedName, DnType, IsCa, KeyPair};
 
     let dir = tempfile::tempdir().unwrap();
 
@@ -150,7 +150,8 @@ async fn missing_client_cert_fails() {
     let connector = TlsConnector::from(Arc::new(client_config));
     let tcp = TcpStream::connect(("127.0.0.1", port)).await.unwrap();
     let server_name = ServerName::try_from("localhost").unwrap();
-    let res = tokio::time::timeout(Duration::from_secs(5), connector.connect(server_name, tcp)).await;
+    let res =
+        tokio::time::timeout(Duration::from_secs(5), connector.connect(server_name, tcp)).await;
     // The handshake either errors out or, depending on rustls version, gives
     // us a stream whose first read returns CertificateRequired. Either is a
     // valid rejection.

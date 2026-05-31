@@ -83,9 +83,8 @@ fn main() -> Result<()> {
             other => bail!("unknown argument: {other}"),
         }
     }
-    let out_path = out_path.unwrap_or_else(|| {
-        PathBuf::from("programs/glyph-verifier/src/groth16/vk_real.rs")
-    });
+    let out_path =
+        out_path.unwrap_or_else(|| PathBuf::from("programs/glyph-verifier/src/groth16/vk_real.rs"));
 
     let vk = extract_vk()?;
     let source = render_vk_source(&vk)?;
@@ -95,7 +94,11 @@ fn main() -> Result<()> {
             .with_context(|| format!("creating parent dir for {}", out_path.display()))?;
     }
     fs::write(&out_path, source).with_context(|| format!("writing {}", out_path.display()))?;
-    eprintln!("wrote {} (vk_hash={})", out_path.display(), hex::encode(vk_hash(&vk)));
+    eprintln!(
+        "wrote {} (vk_hash={})",
+        out_path.display(),
+        hex::encode(vk_hash(&vk))
+    );
     Ok(())
 }
 
@@ -277,8 +280,14 @@ fn render_vk_source(vk: &ExtractedVk) -> Result<String> {
         vk.image_id[7],
     ));
     out.push_str(&format!("//! prover_version: {}\n", vk.prover_version));
-    out.push_str(&format!("//! control_root:      {}\n", hex::encode(vk.control_root)));
-    out.push_str(&format!("//! bn254_control_id:  {}\n", hex::encode(vk.bn254_control_id)));
+    out.push_str(&format!(
+        "//! control_root:      {}\n",
+        hex::encode(vk.control_root)
+    ));
+    out.push_str(&format!(
+        "//! bn254_control_id:  {}\n",
+        hex::encode(vk.bn254_control_id)
+    ));
     out.push_str("//!\n");
     out.push_str("//! If any byte below is 0xFF, this file was emitted by the no-risc0 stub\n");
     out.push_str("//! path and must NOT be linked into a release build. The verifier's\n");
@@ -286,28 +295,56 @@ fn render_vk_source(vk: &ExtractedVk) -> Result<String> {
 
     out.push_str("use super::Groth16VerifyingKey;\n\n");
     out.push_str("pub const GLYPH_VK_REAL_INNER: Groth16VerifyingKey = Groth16VerifyingKey {\n");
-    out.push_str(&format!("    alpha_g1: {},\n", format_byte_array(&vk.alpha_g1)));
-    out.push_str(&format!("    beta_g2: {},\n", format_byte_array(&vk.beta_g2)));
-    out.push_str(&format!("    gamma_g2: {},\n", format_byte_array(&vk.gamma_g2)));
-    out.push_str(&format!("    delta_g2: {},\n", format_byte_array(&vk.delta_g2)));
+    out.push_str(&format!(
+        "    alpha_g1: {},\n",
+        format_byte_array(&vk.alpha_g1)
+    ));
+    out.push_str(&format!(
+        "    beta_g2: {},\n",
+        format_byte_array(&vk.beta_g2)
+    ));
+    out.push_str(&format!(
+        "    gamma_g2: {},\n",
+        format_byte_array(&vk.gamma_g2)
+    ));
+    out.push_str(&format!(
+        "    delta_g2: {},\n",
+        format_byte_array(&vk.delta_g2)
+    ));
     out.push_str("    ic: [\n");
     for entry in vk.ic.iter() {
         out.push_str(&format!("        {},\n", format_byte_array(entry)));
     }
     out.push_str("    ],\n");
-    out.push_str(&format!("    control_root: {},\n", format_byte_array(&vk.control_root)));
-    out.push_str(&format!("    bn254_control_id: {},\n", format_byte_array(&vk.bn254_control_id)));
+    out.push_str(&format!(
+        "    control_root: {},\n",
+        format_byte_array(&vk.control_root)
+    ));
+    out.push_str(&format!(
+        "    bn254_control_id: {},\n",
+        format_byte_array(&vk.bn254_control_id)
+    ));
     out.push_str("};\n\n");
-    out.push_str(&format!("pub const GLYPH_VK_REAL_HASH: [u8; 32] = {};\n",
-        format_byte_array(&hash)));
-    out.push_str(&format!("pub const GLYPH_VK_REAL_IMAGE_ID: [u32; 8] = {};\n",
-        format_u32_array(&vk.image_id)));
-    out.push_str(&format!("pub const GLYPH_VK_REAL_PROVER_VERSION: &str = {:?};\n",
-        vk.prover_version));
-    out.push_str(&format!("pub const GLYPH_VK_REAL_CONTROL_ROOT: [u8; 32] = {};\n",
-        format_byte_array(&vk.control_root)));
-    out.push_str(&format!("pub const GLYPH_VK_REAL_BN254_CONTROL_ID: [u8; 32] = {};\n",
-        format_byte_array(&vk.bn254_control_id)));
+    out.push_str(&format!(
+        "pub const GLYPH_VK_REAL_HASH: [u8; 32] = {};\n",
+        format_byte_array(&hash)
+    ));
+    out.push_str(&format!(
+        "pub const GLYPH_VK_REAL_IMAGE_ID: [u32; 8] = {};\n",
+        format_u32_array(&vk.image_id)
+    ));
+    out.push_str(&format!(
+        "pub const GLYPH_VK_REAL_PROVER_VERSION: &str = {:?};\n",
+        vk.prover_version
+    ));
+    out.push_str(&format!(
+        "pub const GLYPH_VK_REAL_CONTROL_ROOT: [u8; 32] = {};\n",
+        format_byte_array(&vk.control_root)
+    ));
+    out.push_str(&format!(
+        "pub const GLYPH_VK_REAL_BN254_CONTROL_ID: [u8; 32] = {};\n",
+        format_byte_array(&vk.bn254_control_id)
+    ));
 
     Ok(out)
 }

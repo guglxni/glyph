@@ -31,8 +31,13 @@ pub struct AttestationEvidence {
 pub trait TeeProvider: Send + Sync {
     fn seal(&self, plaintext: &[u8]) -> Result<Vec<u8>>;
     fn unseal(&self, sealed: &[u8]) -> Result<Vec<u8>>;
-    fn attest(&self, user_data: &[u8], policy_commitment: &[u8; 32]) -> Result<AttestationEvidence>;
-    fn verify_attestation(&self, evidence: &AttestationEvidence, expected_commitment: &[u8; 32]) -> Result<bool>;
+    fn attest(&self, user_data: &[u8], policy_commitment: &[u8; 32])
+        -> Result<AttestationEvidence>;
+    fn verify_attestation(
+        &self,
+        evidence: &AttestationEvidence,
+        expected_commitment: &[u8; 32],
+    ) -> Result<bool>;
 
     /// Whether this provider is backed by a real TEE device. The worker boot
     /// path uses this to gate `Production` runtime mode (audit T4 / T33).

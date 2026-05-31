@@ -222,9 +222,11 @@ impl AuditLog {
         // Load existing entries first so we don't lose anything that's rolled
         // out of the ring.
         let mut all_entries: Vec<AuditEntry> = if path.exists() {
-            let sealed = std::fs::read(path)
-                .with_context(|| format!("failed reading existing audit log at {}", path.display()))?;
-            let unsealed = provider.unseal(&sealed)
+            let sealed = std::fs::read(path).with_context(|| {
+                format!("failed reading existing audit log at {}", path.display())
+            })?;
+            let unsealed = provider
+                .unseal(&sealed)
                 .context("failed to unseal existing audit log for append")?;
             serde_json::from_slice(&unsealed)
                 .context("existing audit log file is malformed JSON")?
@@ -317,11 +319,18 @@ pub fn verify_entries(entries: &[AuditEntry], worker_vk: &VerifyingKey) -> Resul
         let sig = DalekSignature::from_bytes(&entry.worker_signature);
         worker_vk
             .verify(&entry.canonical_unsigned_bytes(), &sig)
-            .map_err(|e| anyhow!("audit signature invalid at sequence {}: {}", entry.sequence, e))?;
+            .map_err(|e| {
+                anyhow!(
+                    "audit signature invalid at sequence {}: {}",
+                    entry.sequence,
+                    e
+                )
+            })?;
         expected_prev = entry.entry_hash();
-        expected_seq = entry.sequence.checked_add(1).ok_or_else(|| {
-            anyhow!("audit sequence overflow at {}", entry.sequence)
-        })?;
+        expected_seq = entry
+            .sequence
+            .checked_add(1)
+            .ok_or_else(|| anyhow!("audit sequence overflow at {}", entry.sequence))?;
     }
     Ok(())
 }
@@ -351,8 +360,8 @@ pub fn merkle_root(entries: &[AuditEntry]) -> [u8; 32] {
 
 // serde helper for `[u8; 64]` (defaults to per-byte tuple, which is unwieldy).
 mod serde_bytes_array_64 {
-    use serde::{Deserializer, Serializer};
     use serde::de::Error;
+    use serde::{Deserializer, Serializer};
 
     pub fn serialize<S: Serializer>(bytes: &[u8; 64], s: S) -> Result<S::Ok, S::Error> {
         s.serialize_bytes(bytes)

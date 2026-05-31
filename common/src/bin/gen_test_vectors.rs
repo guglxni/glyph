@@ -210,11 +210,7 @@ where
             "sha256": hex::encode(digest),
             "len": bytes.len(),
         });
-        fs::write(
-            &signed_path,
-            serde_json::to_string_pretty(&signed).unwrap(),
-        )
-        .unwrap();
+        fs::write(&signed_path, serde_json::to_string_pretty(&signed).unwrap()).unwrap();
 
         eprintln!("wrote {} ({} bytes)", bytes_path.display(), bytes.len());
     }

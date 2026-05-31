@@ -1,12 +1,6 @@
-use std::env;
-use std::net::{IpAddr, SocketAddr};
-use std::path::{Path, PathBuf};
-use std::str::FromStr;
-use std::sync::Arc;
-use std::time::Duration;
 use anyhow::{anyhow, Context, Result};
 use base64::Engine;
-use ed25519_dalek::{Signature as DalekSignature, Verifier, VerifyingKey, SigningKey};
+use ed25519_dalek::{Signature as DalekSignature, SigningKey, Verifier, VerifyingKey};
 use glyph_common::{
     canonical_signing_payload, hash_intent, hash_policy, CanonicalAccountMeta, CanonicalIntent,
 };
@@ -22,11 +16,16 @@ use glyph_tee_worker::transaction_builder::{
     canonical_target_instruction_bytes, solana_types::Pubkey, TransactionBuilder,
 };
 use glyph_tee_worker::types::{
-    GlyphProofBundle, RuntimeMode, TeeVendor, TransactionIntent,
-    WorkerConfig, WorkerResponse,
+    GlyphProofBundle, RuntimeMode, TeeVendor, TransactionIntent, WorkerConfig, WorkerResponse,
 };
 use glyph_tee_worker::vendors::{create_provider, AttestationEvidence, TeeProvider};
 use rand::RngCore;
+use std::env;
+use std::net::{IpAddr, SocketAddr};
+use std::path::{Path, PathBuf};
+use std::str::FromStr;
+use std::sync::Arc;
+use std::time::Duration;
 use tokio::io::{AsyncRead, AsyncReadExt, AsyncWrite, AsyncWriteExt};
 use tokio::net::{TcpListener, TcpStream};
 use tokio::sync::{Mutex, RwLock};
@@ -88,7 +87,9 @@ async fn main() -> Result<()> {
     let mut sealed_policy = std::fs::read(&config.policy_path)
         .with_context(|| format!("failed to read policy file: {}", config.policy_path))?;
 
-    let unsealed_policy = provider.unseal(&sealed_policy).context("failed to unseal policy")?;
+    let unsealed_policy = provider
+        .unseal(&sealed_policy)
+        .context("failed to unseal policy")?;
     sealed_policy.zeroize();
 
     let _policy_toml =
@@ -143,8 +144,7 @@ async fn main() -> Result<()> {
     // signed Roughtime backend instead. We refresh once at boot so policy
     // checks have a fresh anchor before the first request.
     let trusted_clock = Arc::new(
-        TrustedClock::new_with_monotonic_seed()
-            .context("failed to initialise trusted clock")?,
+        TrustedClock::new_with_monotonic_seed().context("failed to initialise trusted clock")?,
     );
     let monotonic_backend = MonotonicBackend::from_clock(&trusted_clock);
     if let Err(e) = trusted_clock.refresh(&monotonic_backend) {
@@ -169,7 +169,10 @@ async fn main() -> Result<()> {
     let attestation_state: Arc<RwLock<Option<BoundAttestation>>> = match initial_attestation {
         Ok(att) => Arc::new(RwLock::new(Some(att))),
         Err(e) => {
-            if matches!(config.runtime_mode, RuntimeMode::Production | RuntimeMode::Staging) {
+            if matches!(
+                config.runtime_mode,
+                RuntimeMode::Production | RuntimeMode::Staging
+            ) {
                 return Err(e).context("boot attestation failed in non-Dev runtime mode");
             }
             warn!(error = %e, "boot attestation failed in Dev mode — bundles will omit worker_attestation");
@@ -305,8 +308,7 @@ async fn main() -> Result<()> {
     // `TlsAcceptor` that requires a valid client certificate. Dev mode falls
     // back to plain TCP with a startup warning.
     let mtls_enabled = env::var("GLYPH_MTLS_ENABLED").ok().as_deref() == Some("1");
-    let want_mtls = mtls_enabled
-        || matches!(config.runtime_mode, RuntimeMode::Production);
+    let want_mtls = mtls_enabled || matches!(config.runtime_mode, RuntimeMode::Production);
     let mtls_listener = if want_mtls {
         let cert = env::var("GLYPH_MTLS_SERVER_CERT").ok();
         let key = env::var("GLYPH_MTLS_SERVER_KEY").ok();
@@ -315,7 +317,9 @@ async fn main() -> Result<()> {
             (Some(c), Some(k), Some(ca)) => {
                 let l = MtlsListener::new(&config.listen_addr, &c, &k, &ca)
                     .await
-                    .with_context(|| format!("failed binding mTLS listener at {}", config.listen_addr))?;
+                    .with_context(|| {
+                        format!("failed binding mTLS listener at {}", config.listen_addr)
+                    })?;
                 info!(addr = %l.local_addr, "worker listening (mTLS)");
                 Some(l)
             }
@@ -629,7 +633,8 @@ where
         }
     };
 
-    let payload = serde_json::to_vec(&worker_response).context("failed serializing worker response")?;
+    let payload =
+        serde_json::to_vec(&worker_response).context("failed serializing worker response")?;
     stream
         .write_all(&payload)
         .await
@@ -678,12 +683,14 @@ async fn process_intent(
                 let stale_age = age > MAX_ATTESTATION_AGE_SECS;
                 let stale_policy = bound.policy_commitment != policy_commitment;
                 if stale_age || stale_policy {
-                    if matches!(state.runtime_mode, RuntimeMode::Production | RuntimeMode::Staging) {
+                    if matches!(
+                        state.runtime_mode,
+                        RuntimeMode::Production | RuntimeMode::Staging
+                    ) {
                         state.metrics.record_attestation_stale_rejection();
                         warn!(
                             age_secs = age,
-                            stale_policy,
-                            "rejecting intent — AttestationStale"
+                            stale_policy, "rejecting intent — AttestationStale"
                         );
                         anyhow::bail!(
                             "AttestationStale: latest evidence is {} seconds old (max {}) or bound to a rotated policy (stale_policy={})",
@@ -692,14 +699,20 @@ async fn process_intent(
                             stale_policy
                         );
                     }
-                    warn!(age_secs = age, stale_policy, "stale attestation in Dev mode — continuing");
+                    warn!(
+                        age_secs = age,
+                        stale_policy, "stale attestation in Dev mode — continuing"
+                    );
                     None
                 } else {
                     Some(bound.evidence.quote.clone())
                 }
             }
             None => {
-                if matches!(state.runtime_mode, RuntimeMode::Production | RuntimeMode::Staging) {
+                if matches!(
+                    state.runtime_mode,
+                    RuntimeMode::Production | RuntimeMode::Staging
+                ) {
                     state.metrics.record_attestation_stale_rejection();
                     anyhow::bail!(
                         "AttestationStale: no boot attestation available (worker not yet attested)"
@@ -710,9 +723,7 @@ async fn process_intent(
         }
     };
 
-    if let Err(e) =
-        validate_intent_signature(&intent, &policy_commitment, &worker_pubkey, epoch)
-    {
+    if let Err(e) = validate_intent_signature(&intent, &policy_commitment, &worker_pubkey, epoch) {
         state.metrics.record_sig_failure();
         return Err(e).context("signature validation failed");
     }
@@ -838,7 +849,9 @@ async fn process_intent(
     bundle.signed_transaction = tx_bytes;
     // Bounded debug correlator — first 16 bytes of the committed tx_hash.
     // NOT a Solana signature. Closes F-19, F-29.
-    bundle.tx_hash_prefix.copy_from_slice(&bundle.public_inputs.tx_hash[..16]);
+    bundle
+        .tx_hash_prefix
+        .copy_from_slice(&bundle.public_inputs.tx_hash[..16]);
     // ── Attach worker attestation envelope (closes T6) ──────────────────────
     // SDK and on-chain `register_agent` re-verify this against the
     // current policy commitment + 5-tuple binding. We attach the raw quote
@@ -881,7 +894,10 @@ async fn process_intent(
                 state.metrics.record_audit_entry_appended();
             }
             Err(e) => {
-                if matches!(state.runtime_mode, RuntimeMode::Production | RuntimeMode::Staging) {
+                if matches!(
+                    state.runtime_mode,
+                    RuntimeMode::Production | RuntimeMode::Staging
+                ) {
                     return Err(e).context("audit log append failed (fail-closed in non-Dev)");
                 }
                 warn!(error = %e, "audit log append failed in Dev mode — continuing");
@@ -1056,7 +1072,10 @@ fn load_signing_key(config: &WorkerConfig, provider: &dyn TeeProvider) -> Result
         info!("worker keypair unsealed via TEE provider");
         unsealed
     } else {
-        if matches!(config.runtime_mode, RuntimeMode::Production | RuntimeMode::Staging) {
+        if matches!(
+            config.runtime_mode,
+            RuntimeMode::Production | RuntimeMode::Staging
+        ) {
             // Closes T21: production / staging refuse plaintext keypairs on disk.
             anyhow::bail!(
                 "worker-keypair.json is plaintext on disk in {:?} mode; \
@@ -1109,8 +1128,13 @@ fn perform_attestation(
     // logs without needing to thread an extra arg through every call.
     let _ = domain;
 
-    let user_data =
-        provider.compute_user_data(policy_commitment, agent_pubkey, worker_pubkey, boot_nonce, epoch);
+    let user_data = provider.compute_user_data(
+        policy_commitment,
+        agent_pubkey,
+        worker_pubkey,
+        boot_nonce,
+        epoch,
+    );
     let evidence = match provider.attest(&user_data, policy_commitment) {
         Ok(e) => e,
         Err(err) => {
@@ -1225,9 +1249,7 @@ fn enforce_production_invariants(config: &WorkerConfig, provider: &dyn TeeProvid
     }
 
     if env::var("RISC0_DEV_MODE").is_ok() {
-        return Err(anyhow!(
-            "RISC0_DEV_MODE must not be set in production mode"
-        ));
+        return Err(anyhow!("RISC0_DEV_MODE must not be set in production mode"));
     }
 
     enforce_tee_invariants(provider)?;
@@ -1249,7 +1271,10 @@ fn enforce_production_invariants(config: &WorkerConfig, provider: &dyn TeeProvid
 /// is a strict subset of Production except for two exceptions documented
 /// inline. Closes mock-sweep #62 STAGING bypass.
 fn enforce_staging_invariants(config: &WorkerConfig) -> Result<()> {
-    if !matches!(config.runtime_mode, RuntimeMode::Staging | RuntimeMode::Production) {
+    if !matches!(
+        config.runtime_mode,
+        RuntimeMode::Staging | RuntimeMode::Production
+    ) {
         return Ok(());
     }
 
@@ -1279,13 +1304,8 @@ fn enforce_tee_invariants(provider: &dyn TeeProvider) -> Result<()> {
     // Closes T29 (attestation slice): exercise the attestation path with a
     // structurally-valid 5-tuple binding so a regressed vendor surfaces at
     // boot, not at first request.
-    let probe_user_data = provider.compute_user_data(
-        &[0u8; 32],
-        &[0u8; 32],
-        &[0u8; 32],
-        &[0u8; 32],
-        0,
-    );
+    let probe_user_data =
+        provider.compute_user_data(&[0u8; 32], &[0u8; 32], &[0u8; 32], &[0u8; 32], 0);
     let probe_evidence = provider
         .attest(&probe_user_data, &[0u8; 32])
         .context("production attestation probe failed (provider.attest)")?;
@@ -1441,7 +1461,8 @@ fn load_config() -> Result<WorkerConfig> {
     // Closes T13: in production, refuse non-loopback bind unless the operator
     // explicitly opts in via GLYPH_ALLOW_PUBLIC_BIND=1 *and* an mTLS CA is
     // configured. The mTLS-CA check is a placeholder until WS-5 lands.
-    let listen_addr = env::var("GLYPH_LISTEN_ADDR").unwrap_or_else(|_| "127.0.0.1:8088".to_string());
+    let listen_addr =
+        env::var("GLYPH_LISTEN_ADDR").unwrap_or_else(|_| "127.0.0.1:8088".to_string());
     if matches!(runtime_mode, RuntimeMode::Production) {
         let host = listen_addr
             .rsplit_once(':')
@@ -1485,7 +1506,8 @@ fn load_config() -> Result<WorkerConfig> {
 
     Ok(WorkerConfig {
         tee_vendor,
-        policy_path: env::var("GLYPH_POLICY_PATH").unwrap_or_else(|_| "policy.toml.sealed".to_string()),
+        policy_path: env::var("GLYPH_POLICY_PATH")
+            .unwrap_or_else(|_| "policy.toml.sealed".to_string()),
         keypair_path,
         listen_addr,
         solana_rpc_url,

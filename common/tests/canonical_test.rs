@@ -147,7 +147,10 @@ fn target_ix_length_prefixes_close_t28() {
 
     let h_a = hash_target_instruction(&program, &metas_a, &data_a);
     let h_b = hash_target_instruction(&program, &[], &data_b);
-    assert_ne!(h_a, h_b, "length prefixes must disambiguate the two layouts");
+    assert_ne!(
+        h_a, h_b,
+        "length prefixes must disambiguate the two layouts"
+    );
 }
 
 #[test]

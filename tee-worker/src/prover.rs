@@ -4,8 +4,7 @@ use borsh::BorshDeserialize;
 use sha2::{Digest, Sha256};
 
 use glyph_common::{
-    self, hash_intent, hash_policy,
-    IntentPayload, Policy as CanonicalPolicy, PublicOutputs,
+    self, hash_intent, hash_policy, IntentPayload, Policy as CanonicalPolicy, PublicOutputs,
 };
 
 use crate::types::{GlyphProofBundle, Groth16Proof, PublicInputs, TransactionIntent};

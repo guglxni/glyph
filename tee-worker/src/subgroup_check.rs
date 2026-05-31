@@ -127,8 +127,8 @@ mod tests {
     use ark_bn254::G2Projective;
     use ark_ec::CurveGroup;
     use ark_ff::{BigInteger, UniformRand};
-    use rand::SeedableRng;
     use rand::rngs::StdRng;
+    use rand::SeedableRng;
 
     /// Helper: encode an `ark-bn254` G2 point into Solana's 128-byte big-endian layout.
     fn encode_g2_solana(p: &G2Affine) -> G2Bytes {

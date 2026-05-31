@@ -93,9 +93,17 @@ fn run_pipeline_for_provider<P: TeeProvider>(provider: P) {
     // 1. Compute user_data via the trait helper (closes T6 — vendor-specific
     //    domain string is mixed in so cross-vendor evidence cannot be
     //    substituted).
-    let user_data =
-        provider.compute_user_data(&policy_commitment, &agent_pubkey, &worker_pubkey, &boot_nonce, epoch);
-    assert_ne!(user_data, [0u8; 32], "compute_user_data must be non-trivial");
+    let user_data = provider.compute_user_data(
+        &policy_commitment,
+        &agent_pubkey,
+        &worker_pubkey,
+        &boot_nonce,
+        epoch,
+    );
+    assert_ne!(
+        user_data, [0u8; 32],
+        "compute_user_data must be non-trivial"
+    );
 
     // 2. Attest + self-verify (defence-in-depth against vendor regression).
     let evidence = provider
@@ -112,7 +120,12 @@ fn run_pipeline_for_provider<P: TeeProvider>(provider: P) {
     //    to the bundle (mirrors what main.rs does in the request path).
     let prover = DevProver::new();
     let mut bundle = prover
-        .generate_proof(&make_intent(), &canonical_policy, vec![1, 2, 3, 4], 1_700_000_500)
+        .generate_proof(
+            &make_intent(),
+            &canonical_policy,
+            vec![1, 2, 3, 4],
+            1_700_000_500,
+        )
         .expect("dev proof generation");
     bundle.worker_attestation = Some(evidence.quote.clone());
 
@@ -199,11 +212,14 @@ fn cross_vendor_evidence_substitution_rejected() {
     let agent_pubkey = [0xBBu8; 32];
     let boot_nonce = boot_nonce_fixture();
 
-    let nitro_user_data =
-        nitro.compute_user_data(&policy_commitment, &agent_pubkey, &worker_pubkey, &boot_nonce, 0);
-    let nitro_evidence = nitro
-        .attest(&nitro_user_data, &policy_commitment)
-        .unwrap();
+    let nitro_user_data = nitro.compute_user_data(
+        &policy_commitment,
+        &agent_pubkey,
+        &worker_pubkey,
+        &boot_nonce,
+        0,
+    );
+    let nitro_evidence = nitro.attest(&nitro_user_data, &policy_commitment).unwrap();
 
     // Nitro-shaped evidence handed to SGX must be rejected (vendor field
     // mismatch).
@@ -228,16 +244,31 @@ fn user_data_binding_changes_with_each_field() {
     let baseline = nitro.compute_user_data(&pc, &agent, &worker, &nonce, 0);
 
     let pc2 = [9u8; 32];
-    assert_ne!(baseline, nitro.compute_user_data(&pc2, &agent, &worker, &nonce, 0));
+    assert_ne!(
+        baseline,
+        nitro.compute_user_data(&pc2, &agent, &worker, &nonce, 0)
+    );
 
     let agent2 = [9u8; 32];
-    assert_ne!(baseline, nitro.compute_user_data(&pc, &agent2, &worker, &nonce, 0));
+    assert_ne!(
+        baseline,
+        nitro.compute_user_data(&pc, &agent2, &worker, &nonce, 0)
+    );
 
     let worker2 = [9u8; 32];
-    assert_ne!(baseline, nitro.compute_user_data(&pc, &agent, &worker2, &nonce, 0));
+    assert_ne!(
+        baseline,
+        nitro.compute_user_data(&pc, &agent, &worker2, &nonce, 0)
+    );
 
     let nonce2 = [9u8; 32];
-    assert_ne!(baseline, nitro.compute_user_data(&pc, &agent, &worker, &nonce2, 0));
+    assert_ne!(
+        baseline,
+        nitro.compute_user_data(&pc, &agent, &worker, &nonce2, 0)
+    );
 
-    assert_ne!(baseline, nitro.compute_user_data(&pc, &agent, &worker, &nonce, 1));
+    assert_ne!(
+        baseline,
+        nitro.compute_user_data(&pc, &agent, &worker, &nonce, 1)
+    );
 }

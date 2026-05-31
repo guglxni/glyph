@@ -27,7 +27,10 @@ fn separate_ips_have_independent_buckets() {
     for _ in 0..10 {
         limiter.try_acquire_at(a, t0);
     }
-    assert!(limiter.try_acquire_at(b, t0), "second IP must not be limited");
+    assert!(
+        limiter.try_acquire_at(b, t0),
+        "second IP must not be limited"
+    );
 }
 
 #[test]
@@ -41,5 +44,8 @@ fn refills_at_correct_rate() {
     // 10/60 token/sec → 6 seconds buys exactly 1 token.
     let t1 = t0 + Duration::from_secs(6);
     assert!(limiter.try_acquire_at(ip, t1));
-    assert!(!limiter.try_acquire_at(ip, t1), "burst capacity should be 1 after 6s refill");
+    assert!(
+        !limiter.try_acquire_at(ip, t1),
+        "burst capacity should be 1 after 6s refill"
+    );
 }
