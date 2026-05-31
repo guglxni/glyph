@@ -87,7 +87,7 @@ is **not recommended** because it contradicts the research GLYPH is built on.
 
 ## Sources
 
-- Thesis Ch. 4 — `arXiv-2509.00085v1/chapter-4/authenticated-delegation.tex`, `phc.tex`.
+- Thesis Ch. 4 — Tobin South, *Private, Verifiable, and Auditable AI Systems*, arXiv:2509.00085.
 - Solana Attestation Service — https://github.com/solana-foundation/solana-attestation-service
 - sol-did — https://github.com/identity-com/sol-did
 - On-chain Identity Gateway (Civic) — https://github.com/identity-com/on-chain-identity-gateway

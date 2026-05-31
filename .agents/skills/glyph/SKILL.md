@@ -5,7 +5,7 @@ description: "Use when building, auditing, deploying, explaining, or extending G
 
 # GLYPH
 
-Work on GLYPH as a thesis-backed cryptographic guardrail system for autonomous agents. Keep the implementation aligned with `arXiv-2509.00085v1/` and with the repository invariants before changing code, docs, deployment, or claims.
+Work on GLYPH as a thesis-backed cryptographic guardrail system for autonomous agents. Keep the implementation aligned with Tobin South's *Private, Verifiable, and Auditable AI Systems* (`arXiv:2509.00085`) and with the repository invariants before changing code, docs, deployment, or claims.
 
 ## When to use
 
@@ -24,7 +24,7 @@ Do not use this skill for unrelated generic Solana, frontend, or cryptography wo
 2. Read the minimum relevant local context before changing anything:
    - Always start with `AGENTS.md` and this `SKILL.md`.
    - For architecture or hardening: `docs/production-migration-blueprint.md`, `aidlc-docs/zk-upgrade-design.md`, and `references/repo-map.md`.
-   - For thesis alignment: `references/thesis-map.md` plus the cited files in `arXiv-2509.00085v1/`.
+   - For thesis alignment: `references/thesis-map.md`, the arXiv article, and the local thesis-aligned integration docs.
    - For implementation safety: `references/invariants.md`.
 3. Prefer Graphify or code-index tools for orientation when available. If `graphify-out/` exists, query it before broad manual exploration.
 4. Make tightly scoped changes that preserve the system's cryptographic claims. Do not weaken production safeguards for demo convenience.

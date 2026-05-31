@@ -1,6 +1,6 @@
 # Paper Brief — Tobin South, "Private, Verifiable, and Auditable AI Systems" (arXiv:2509.00085)
 
-Source: `/Users/aaryanguglani/Documents/workspace1/glyph/arXiv-2509.00085v1/`. Section anchors below refer to thesis chapter files.
+Source: https://arxiv.org/abs/2509.00085. Section anchors below refer to the article's thesis chapters and section names.
 
 ---
 

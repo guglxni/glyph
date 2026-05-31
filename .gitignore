@@ -5,6 +5,10 @@ node_modules/
 **/node_modules/
 .anchor/
 .DS_Store
+.env
+.env.*
+!.env.example
+.venv/
 *.so
 *.dylib
 test-ledger/
@@ -22,6 +26,8 @@ formal_verification/.lake/
 **/.vercel/
 web/node_modules/
 *.log
+.graphify_*.json
+.graphify_uncached.txt
 
 # Agent configuration directories
 .adal/
@@ -61,6 +67,8 @@ web/node_modules/
 .zencoder/
 
 # Grant application documentation and submission artifacts
+AGENT_HANDOVER.md
+DEPLOYMENT_KEYS.md
 GRANT_APPLICATION.txt
 GRANT_APPLICATION.md
 GRANT_APPLICATION.*
@@ -86,3 +94,7 @@ IMG_6170.jpg
 repomix-output.xml
 Private_Verifiable_and_Auditable_AI_Systems.pdf
 graphify-out/
+
+# Local devnet run outputs
+scripts/e2e-devnet/result.json
+scripts/e2e-devnet/run.sh

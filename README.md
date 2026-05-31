@@ -213,7 +213,7 @@ GLYPH is a **working on-chain implementation** of the layered-accountability arc
 
 > **Private, Verifiable, and Auditable AI Systems**
 > Tobin South — PhD Dissertation, Massachusetts Institute of Technology — **arXiv:[2509.00085](https://arxiv.org/abs/2509.00085)**
-> *(full LaTeX source bundled in [`arXiv-2509.00085v1/`](arXiv-2509.00085v1/))*
+> *(canonical article: https://arxiv.org/abs/2509.00085)*
 
 The dissertation argues that the societal reliance on AI "necessitates robust frameworks for ensuring its security, accountability, and trustworthiness," and develops technical solutions for **privacy, verifiability, and auditability** in foundation-model systems — including zero-knowledge verifiable claims, TEE/MPC-backed confidential deployment, and enhanced delegation/credentialing for autonomous and multi-agent AI. GLYPH instantiates that framework as deployable Solana infrastructure:
 

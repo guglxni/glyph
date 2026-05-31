@@ -522,7 +522,7 @@ Before any mainnet deployment, GLYPH should undergo a third-party audit. Recomme
 
 Per AWS Labs AI-DLC structure:
 
-- **INCEPTION** (already complete): What and why is captured in `arXiv-2509.00085v1/` (the academic foundation), `docs/architecture.md`, `GRANT_APPLICATION.md`, and the existing `aidlc-docs/zk-upgrade-design.md`.
+- **INCEPTION** (already complete): What and why is captured in the arXiv article [2509.00085](https://arxiv.org/abs/2509.00085), `docs/architecture.md`, and the existing `aidlc-docs/zk-upgrade-design.md`.
 - **CONSTRUCTION** (this document): What you're reading. Ten workstreams, four phases, ~9-11 week roadmap.
 - **OPERATIONS** (deferred): Will be authored as `audit/OPERATIONS_PLAN.md` after WS-2 delivers a working TEE — will cover deployment topology (single Nitro Enclave per agent vs pool), KMS key rotation, on-chain governance, incident response runbook, monitoring SLIs/SLOs.
 

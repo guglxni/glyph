@@ -34,5 +34,5 @@ Use this checklist before committing GLYPH changes.
 ## Frontend Claims
 
 - If UI says "live", the backing endpoint/account should be queried live or the copy should say "demo".
-- If UI says "implementation of arXiv:2509.00085v1", tie it to the concrete pipeline: delegation, policy, TEE, ZK proof, verifier.
-- Avoid showing local absolute filesystem paths in public UI; use repo-relative paths like `arXiv-2509.00085v1/`.
+- If UI says "implementation of arXiv:2509.00085", tie it to the concrete pipeline: delegation, policy, TEE, ZK proof, verifier.
+- Avoid showing local absolute filesystem paths or local paper-source folders in public UI; link the article at `https://arxiv.org/abs/2509.00085`.

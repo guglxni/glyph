@@ -42,8 +42,8 @@ above the workstreams tracked in `audit/IMPLEMENTATION_PLAN.md`.
 - Every doc has the same 6-section structure: **Paper Reference,
   Current GLYPH state, Proposed Integration, Wire Format / API
   Surface, Implementation Plan / Workstream, Risks & Trade-offs.**
-- Thesis citations use exact section names and `.tex` file line
-  numbers from `arXiv-2509.00085v1/chapter-4/`.
+- Thesis citations use exact section names from Tobin South,
+  *Private, Verifiable, and Auditable AI Systems* (arXiv:2509.00085).
 - Where the thesis under-specifies a binding, the doc says **"Unspecified
   in thesis; GLYPH proposes:"** and supplies a concrete construction.
 - Wire-format changes use **payload-prefix versioning** (`GLYPH:DELEGATION:v2:`

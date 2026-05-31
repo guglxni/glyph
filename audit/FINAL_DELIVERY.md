@@ -259,7 +259,7 @@ Most LOW/INFO items deferred. Not blocking production.
 
 ### Root
 - `MIGRATION.md` (new) — breaking changes.
-- `DEPLOYMENT_KEYS.md` (new) — real program ID.
+- `Anchor.toml` / verifier source constants — real program ID.
 - `tmp_hash.rs` — deleted.
 - `scripts/demo.sh` — hardened.
 - `scripts/seal-keypair.sh` (new) — operator helper.

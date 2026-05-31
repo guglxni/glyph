@@ -2,7 +2,7 @@
 
 **Date:** 2026-05-10
 **Scope:** non-test code paths reachable in production builds. Pure-test occurrences dropped.
-**Sweep tools:** ripgrep across `*.rs` / `*.ts` / `*.tsx` / `*.toml` / `*.sh`, excluding `target/`, `arXiv-2509.00085v1/`, `graphify-out/`, `node_modules/`, `**/.lake/`.
+**Sweep tools:** ripgrep across `*.rs` / `*.ts` / `*.tsx` / `*.toml` / `*.sh`, excluding generated or local-only folders such as `target/`, `graphify-out/`, `node_modules/`, and `**/.lake/`.
 
 ## Counts per category
 
