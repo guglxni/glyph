@@ -6,6 +6,7 @@
 
 **One policy. Any program. Cryptographically proven, on-chain.**
 
+[![CI](https://github.com/guglxni/glyph/actions/workflows/ci.yml/badge.svg)](https://github.com/guglxni/glyph/actions/workflows/ci.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](./LICENSE)
 [![Devnet](https://img.shields.io/badge/Solana-devnet%20live-14F195?logo=solana&logoColor=white)](https://explorer.solana.com/address/G5RnXgNZYiS4NJey6JzyxTLvPPPUMqUDL7wg6nqaMD3g?cluster=devnet)
 [![Live Demo](https://img.shields.io/badge/demo-live-success)](https://web-lovat-seven-23.vercel.app)
