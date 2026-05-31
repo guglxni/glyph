@@ -224,3 +224,33 @@ jobs:
 
       - name: Run multi_protocol_demo
         run: cargo run --example multi_protocol_demo --manifest-path tee-worker/Cargo.toml
+
+  # ---------------------------------------------------------------------------
+  # Lean 4 formal verification. The proofs are Mathlib-free and the support
+  # library is vendored at formal_verification/lean_solana, so `lake build`
+  # compiles from a clean checkout in seconds. We also hard-assert that no
+  # `sorry`/`admit` slipped into the proof sources.
+  # ---------------------------------------------------------------------------
+  formal-verification:
+    name: Lean 4 proofs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install elan (Lean toolchain manager)
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh \
+            | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Build proofs (lake build)
+        working-directory: formal_verification
+        run: lake build
+
+      - name: Assert zero sorry / admit
+        run: |
+          if grep -rnE '\b(sorry|admit)\b' formal_verification/Proofs/*.lean; then
+            echo "::error::Found sorry/admit in Lean proofs"; exit 1
+          fi
+          echo "No sorry/admit in proofs."

@@ -429,7 +429,7 @@ Full, honest gap ledger: [`docs/CAPSTONE_GAPS.md`](docs/CAPSTONE_GAPS.md).
 ├── sdk/rust/                  # Rust SDK (IntentBuilder, GlyphClient)
 ├── sdk/typescript/            # TypeScript SDK (build + jest tests)
 ├── examples/multi-protocol/   # One policy, three programs
-├── formal_verification/       # Lean 4 proofs (9 theorems)
+├── formal_verification/       # Lean 4 proofs (19 theorems, 6 modules)
 ├── web/                       # Live Next.js demo (Vercel)
 ├── docs/                      # Architecture, policy DSL, demo, security, integrations
 └── scripts/                   # Build / deploy / demo helpers
