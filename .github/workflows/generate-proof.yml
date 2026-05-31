@@ -50,6 +50,12 @@ jobs:
           key: ${{ runner.os }}-proof-${{ hashFiles('Cargo.lock') }}
 
       - name: Install RISC Zero toolchain (rzup + cargo-risczero 1.2.x)
+        env:
+          # rzup fetches release assets from api.github.com; pass the token so it
+          # uses the authenticated (higher) rate limit instead of the shared
+          # unauthenticated one, which otherwise 429s on hosted runners.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           curl -L https://risczero.com/install | bash
           echo "$HOME/.risc0/bin" >> "$GITHUB_PATH"
