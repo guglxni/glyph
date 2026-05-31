@@ -4,6 +4,25 @@
 
 :root {
   --bg: #050608;
+  --font-sans: "Absans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "ADAXI", "Absans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "SFMono-Regular", "JetBrains Mono", "Roboto Mono", ui-monospace, monospace;
+}
+
+@font-face {
+  font-family: "ADAXI";
+  src: url("/fonts/ADAXI.woff2") format("woff2");
+  font-display: swap;
+  font-style: normal;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Absans";
+  src: url("/fonts/Absans-Regular.woff2") format("woff2");
+  font-display: swap;
+  font-style: normal;
+  font-weight: 400;
 }
 
 * {
@@ -19,8 +38,17 @@ html {
 body {
   background: var(--bg);
   color: #E6E9EF;
+  font-family: var(--font-sans);
   font-feature-settings: "ss01", "cv01", "cv11";
   text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: 0;
 }
 
 /* Selection */
@@ -52,11 +80,11 @@ body {
   }
 
   .eyebrow {
-    @apply inline-flex items-center gap-2 text-2xs font-medium uppercase tracking-[0.18em] text-white/45;
+    @apply inline-flex items-center gap-2 text-2xs font-medium uppercase tracking-normal text-white/45;
   }
 
   .card {
-    @apply rounded-2xl border border-white/[0.07] bg-ink-850/60 backdrop-blur-sm;
+    @apply rounded-lg border border-white/[0.07] bg-ink-850/60 backdrop-blur-sm;
   }
 
   .hash {
@@ -71,6 +99,90 @@ body {
   }
   .btn-ghost {
     @apply btn border border-white/10 bg-white/[0.02] text-white/85 px-5 py-2.5 hover:bg-white/[0.06] hover:border-white/25;
+  }
+}
+
+.rb-dot-grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 36px 36px;
+  mask-image: radial-gradient(circle at 50% 20%, black, transparent 72%);
+}
+
+.rb-noise {
+  background-image:
+    radial-gradient(circle at 20% 10%, rgba(255,255,255,0.20) 0 1px, transparent 1px),
+    radial-gradient(circle at 70% 80%, rgba(255,255,255,0.16) 0 1px, transparent 1px);
+  background-size: 17px 19px, 23px 29px;
+}
+
+.rb-gradient-text {
+  background: linear-gradient(100deg, #ffffff 0%, #bcfce4 34%, #c193f4 68%, #ffffff 100%);
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: rb-gradient 7s ease-in-out infinite;
+}
+
+.rb-spotlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: var(--spotlight-opacity, 0);
+  background: radial-gradient(
+    360px circle at var(--spotlight-x, 50%) var(--spotlight-y, 50%),
+    var(--spotlight-color, rgba(20, 241, 149, 0.18)),
+    transparent 68%
+  );
+  transition: opacity 150ms ease-out;
+}
+
+.rb-spotlight > * {
+  position: relative;
+}
+
+.rb-rail {
+  animation: rb-rail 26s linear infinite;
+}
+
+@keyframes rb-gradient {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes rb-aurora {
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0) scale(1);
+    opacity: 0.88;
+  }
+  50% {
+    transform: translateX(-50%) translateY(24px) scale(1.08);
+    opacity: 0.58;
+  }
+}
+
+@keyframes rb-rail {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rb-gradient-text,
+  .rb-rail {
+    animation: none;
   }
 }
 

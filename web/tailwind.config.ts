@@ -47,13 +47,14 @@ const config: Config = {
       },
       fontFamily: {
         sans: ["var(--font-sans)", "ui-sans-serif", "system-ui", "sans-serif"],
+        display: ["var(--font-display)", "var(--font-sans)", "ui-sans-serif", "system-ui"],
         mono: ["var(--font-mono)", "ui-monospace", "SFMono-Regular", "monospace"],
       },
       fontSize: {
         "2xs": ["0.6875rem", { lineHeight: "1rem" }],
       },
       letterSpacing: {
-        tightest: "-0.045em",
+        tightest: "0",
       },
       maxWidth: {
         content: "76rem",
@@ -83,12 +84,17 @@ const config: Config = {
           "0%, 100%": { backgroundPosition: "0% 50%" },
           "50%": { backgroundPosition: "100% 50%" },
         },
+        "rb-aurora": {
+          "0%, 100%": { transform: "translateX(-50%) translateY(0) scale(1)", opacity: "0.88" },
+          "50%": { transform: "translateX(-50%) translateY(24px) scale(1.08)", opacity: "0.58" },
+        },
       },
       animation: {
         "fade-up": "fade-up 0.6s cubic-bezier(0.16,1,0.3,1) both",
         "pulse-dot": "pulse-dot 1.8s ease-in-out infinite",
         shimmer: "shimmer 2s infinite",
         "border-flow": "border-flow 6s ease infinite",
+        "rb-aurora": "rb-aurora 12s ease-in-out infinite",
       },
     },
   },

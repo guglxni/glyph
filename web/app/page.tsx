@@ -4,6 +4,14 @@ import { Logo, Nav } from "@/components/Nav";
 import { OnChainStatus } from "@/components/OnChainStatus";
 import { PolicyCompiler } from "@/components/PolicyCompiler";
 import { PolicyConsole } from "@/components/PolicyConsole";
+import {
+  FeatureMatrix,
+  GradientText,
+  ReactBitsBackdrop,
+  SignalRail,
+  SpotlightCard,
+  TiltCard,
+} from "@/components/ReactBitsDecor";
 import { WalletProvider } from "@/components/WalletProvider";
 import { Counter, Pill, Reveal, SectionHeading } from "@/components/ui";
 import {
@@ -175,6 +183,34 @@ export default function Page() {
           </div>
         </section>
 
+        {/* ── React Bits visual layer ── */}
+        <section className="relative overflow-hidden border-y border-white/[0.05] py-24 sm:py-32">
+          <ReactBitsBackdrop intensity="section" />
+          <div className="container-glyph relative">
+            <Reveal>
+              <SectionHeading
+                eyebrow="Live system surface"
+                title={
+                  <>
+                    <GradientText>Thirty moving parts</GradientText>, one enforceable path
+                  </>
+                }
+                intro="The demo surface mirrors the product architecture: identity, policy compilation, deterministic hashing, ZK proving, and on-chain enforcement are visible as one connected system."
+              />
+            </Reveal>
+            <Reveal delay={0.08}>
+              <div className="mt-8">
+                <SignalRail />
+              </div>
+            </Reveal>
+            <Reveal delay={0.12}>
+              <div className="mt-8">
+                <FeatureMatrix />
+              </div>
+            </Reveal>
+          </div>
+        </section>
+
         {/* ── NL → Policy compiler (live centerpiece) ── */}
         <section
           id="compiler"
@@ -189,7 +225,7 @@ export default function Page() {
                 eyebrow="Live · bring your own LLM"
                 title={
                   <>
-                    Author a policy in <span className="text-gradient">plain English</span>
+                    Author a policy in <GradientText>plain English</GradientText>
                   </>
                 }
                 intro="GLYPH's natural-language → policy DSL compiler, live. Describe what your agent may do; your own LLM (any OpenAI-compatible provider — OpenAI, Anthropic, Gemini, Groq, OpenRouter, xAI, Ollama, LM Studio, or a self-hosted LiteLLM proxy) compiles it to the canonical 9-rule policy. A deterministic schema guard clamps the output, then the real policy_commitment is computed in your browser — byte-for-byte identical to the Rust SDK — and you test intents against it. Connect a wallet to bind the policy to your own agent identity."
@@ -211,7 +247,7 @@ export default function Page() {
                 eyebrow="Interactive demo"
                 title={
                   <>
-                    One policy, <span className="text-gradient">any program</span>
+                    One policy, <GradientText>any program</GradientText>
                   </>
                 }
                 intro="Pick an agent action. GLYPH evaluates it against a single declarative policy and computes the canonical policy_commitment — live, in your browser, byte-for-byte identical to the Rust SDK, the TEE worker and the on-chain verifier. Three different programs, one identical commitment, and a correctly-denied fourth."
@@ -339,7 +375,8 @@ export default function Page() {
                       : { ring: "hover:border-white/25", text: "text-white/80", bg: "bg-white/[0.06]" };
                 return (
                   <Reveal key={l.n} delay={i * 0.08}>
-                    <div className={`card group h-full p-6 transition-colors ${tone.ring}`}>
+                    <TiltCard className="h-full">
+                      <SpotlightCard className={`group h-full p-6 transition-colors ${tone.ring}`}>
                       <div className="flex items-center justify-between">
                         <span className="font-mono text-2xs text-white/35">{l.n}</span>
                         <span className={`rounded-full ${tone.bg} px-2.5 py-1 font-mono text-2xs ${tone.text}`}>
@@ -349,7 +386,8 @@ export default function Page() {
                       <h3 className={`mt-4 text-lg font-semibold ${tone.text}`}>{l.name}</h3>
                       <p className="mt-0.5 text-2xs uppercase tracking-wider text-white/40">{l.sub}</p>
                       <p className="mt-3 text-sm leading-relaxed text-white/55">{l.body}</p>
-                    </div>
+                      </SpotlightCard>
+                    </TiltCard>
                   </Reveal>
                 );
               })}
@@ -493,7 +531,7 @@ export default function Page() {
           <div className="container-glyph relative text-center">
             <Reveal>
               <h2 className="mx-auto max-w-2xl text-balance text-3xl font-semibold tracking-tightest text-white sm:text-5xl">
-                Make every agent safe&nbsp;&mdash;&nbsp;<span className="text-gradient">cryptographically.</span>
+                Make every agent safe&nbsp;&mdash;&nbsp;<GradientText>cryptographically.</GradientText>
               </h2>
               <p className="mx-auto mt-5 max-w-xl text-base text-white/55 sm:text-lg">
                 One policy. Any program. Cryptographically proven, on-chain.

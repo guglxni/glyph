@@ -61,7 +61,7 @@ export function LlmSettings({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-ink-950/70 p-4 backdrop-blur-sm sm:items-center"
+            className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-ink-950/70 p-4 backdrop-blur-sm"
             onClick={() => setOpen(false)}
           >
             <motion.div
@@ -69,12 +69,12 @@ export function LlmSettings({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 16, scale: 0.98 }}
               transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className="card my-8 w-full max-w-lg p-6"
+              className="card my-4 max-h-[calc(100svh-2rem)] w-full max-w-lg overflow-y-auto p-5 sm:my-6 sm:p-6"
               onClick={(e) => e.stopPropagation()}
               role="dialog"
               aria-modal="true"
             >
-              <div className="flex items-start justify-between">
+              <div className="sticky -top-5 z-10 flex items-start justify-between bg-ink-850/95 pb-3 pt-1 backdrop-blur sm:-top-6">
                 <div>
                   <h3 className="text-lg font-semibold text-white">LLM settings · bring your own key</h3>
                   <p className="mt-1 text-2xs leading-relaxed text-white/45">{COMPAT_NOTE}</p>
