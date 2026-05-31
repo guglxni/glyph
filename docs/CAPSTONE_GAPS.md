@@ -1,31 +1,38 @@
-# Capstone Gaps
+# Capstone Gaps — Status Ledger
 
-Tracking the gaps identified for the GLYPH capstone and their current status.
+Honest tracking of every gap identified for the GLYPH capstone and its current status.
+Last updated: 2026-05-31.
 
-## Done
+## ✅ Done
 
-- [x] **Program built, deployed, and initialized to devnet** — Program ID
-  `G5RnXgNZYiS4NJey6JzyxTLvPPPUMqUDL7wg6nqaMD3g`, deploy tx
-  `2pidHYhjZxPmdw6tZnX4PW9j6yokU2HNvt3KAngu9GCt7GDe1j1vT2UVGCAY4RCoDLiGDrG6hHo4SF2KzPdE1tv`,
-  config PDA `2371q4QnMm33R3G4nXxxBkieHa8E47BDTBsmZoiurZpT`, VK PDA
-  `5V28XTKVnQYVEG16DzoHfeHKXsYUqG41PxQJhxFyhjyd`. Real VK seeded — on-chain
-  `vk_hash` = `109aba43410e587cf8f6865ece86bc4a1e30252d5331db6e32402f5f2f709707`
-  (matches `vk_real.rs`).
-- [x] **Anchor / toolchain build resolved** — built via `cargo-build-sbf` with the
-  real-vk feature.
-- [x] **Multi-protocol example added** — `multi_protocol_demo` proves a shared
-  policy commitment
-  (`d086deb34a864fb07618821aa5cf02283c4d73ac8f1267f3dbd7f9b0fe0053cb`) across 4
-  intents (System ALLOW, SPL Token ALLOW, Memo ALLOW, Jupiter DENY).
-- [x] **README 8→9 + VK wording fixed.**
-- [x] **LICENSE added.**
-- [x] **.gitignore hardened.**
+| Gap | Resolution | Evidence |
+|-----|-----------|----------|
+| Not a git repo / no GitHub | Public repo created + pushed | https://github.com/guglxni/glyph |
+| No LICENSE | Apache-2.0 added | [`LICENSE`](../LICENSE) |
+| Program unbuilt/undeployed | Built (`cargo-build-sbf --features real-vk`), deployed, initialized | Program [`G5RnXgN…aMD3g`](https://explorer.solana.com/address/G5RnXgNZYiS4NJey6JzyxTLvPPPUMqUDL7wg6nqaMD3g?cluster=devnet), deploy tx `2pidHYhj…dE1tv` |
+| Real VK not on-chain | Real VK seeded; `vk_hash` `109aba43…2f709707` matches `vk_real.rs` | Config PDA `2371q4Qn…rZpT`, VK PDA `5V28XTKV…hjyd` |
+| Anchor 0.29 vs 0.30.1 mismatch | Resolved via `cargo-build-sbf` (bytecode depends on `anchor-lang` crate, not CLI) | `MIGRATION.md` |
+| README "8 rules" + stale VK wording | Corrected to 9 rules; real-VK wording fixed; "guardrail" framing | [`README.md`](../README.md) |
+| README not comprehensive | Full rewrite: Mermaid diagrams, applicability matrix, citation | [`README.md`](../README.md) |
+| No multi-protocol example | Added; one policy / 3 programs / shared commitment `d086deb3…0053cb`; 4th denied | [`examples/multi-protocol/`](../examples/multi-protocol/), [`docs/DEMO.md`](DEMO.md) |
+| No web demo | Live Next.js app on Vercel; in-browser commitment parity | https://web-lovat-seven-23.vercel.app |
+| No research attribution | arXiv:2509.00085 chapter→impl mapping + citation | [`README.md`](../README.md#-research-foundation), [`POSITIONING.md`](POSITIONING.md) |
+| `.gitignore` not hardened | Excludes keypairs, `*.pem`, all `target/`, `node_modules`, `.lake/`, sessions, big assets | [`.gitignore`](../.gitignore) |
+| Stray unused-import warning | Removed; workspace builds 0 warnings | `tee-worker/src/subgroup_check.rs` |
+| Positioning narrative not documented | Canonical narrative doc added | [`POSITIONING.md`](POSITIONING.md) |
 
-## TODO
+## 🔧 In progress / tracked
 
-- [ ] **Git repository** — in progress; repo will be
-  https://github.com/guglxni/glyph, push pending.
-- [ ] **Web demo** — deploying to Vercel; hosted URL pending.
-- [ ] **VK-rotation multisig** — not initialized (devnet-acceptable).
-- [ ] **Full register→verify e2e on devnet** — needs a real proof + attestation;
-  currently demonstrated locally only.
+| Gap | Status | Notes |
+|-----|--------|-------|
+| Full `register_agent → verify_and_execute` e2e on devnet | In progress | Needs a real RISC Zero proof + attestation; proven locally + by 114 tests. Devnet attempt under `scripts/e2e-devnet/`. |
+| CI covering on-chain program + both SDKs | In progress | Hardened `.github/workflows/ci.yml` (workspace, program, sdk-rust, sdk-typescript, demo smoke test). |
+| VK-rotation multisig on devnet | In progress | `initialize_vk_multisig` — devnet-acceptable to defer; mainnet requires Squads-style multisig per `DEPLOYMENT_KEYS.md`. |
+| TEE attestation wired on-chain | Deferred | Attestation verified off-chain today; per-vendor (SGX/Nitro/SEV) hardening is post-capstone. |
+| Demo video | Action (you) | Record Loom; paste into `README.md` `<DEMO_VIDEO_URL>`; final push before 11:00 PM. |
+
+## Scope note
+
+"Devnet live" = deploy + initialize + real-VK-seed confirmed on devnet. The end-to-end
+agent flow with a real proof is the remaining frontier and is tracked transparently above —
+stating this precisely is intentional and strengthens technical credibility.
