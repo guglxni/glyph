@@ -1,6 +1,6 @@
 ---
 name: glyph
-description: "Use when building, auditing, deploying, explaining, or extending GLYPH: verifiable agent guardrails, NL-to-policy compilation, policy commitments, TEE policy checks, RISC Zero/Groth16 proofs, Solana verifier flows, agent delegation, or alignment to arXiv:2509.00085v1."
+description: "Use when building, auditing, deploying, explaining, or extending GLYPH: verifiable agent guardrails, NL-to-policy compilation, policy commitments, TEE policy checks, RISC Zero/Groth16 proofs, Solana verifier flows, agent delegation, or alignment to arXiv:2509.00085."
 ---
 
 # GLYPH

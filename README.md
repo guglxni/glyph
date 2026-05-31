@@ -229,6 +229,25 @@ GLYPH translates a research framework into **on-chain primitives** — the acade
 
 ---
 
+## Agent skill
+
+GLYPH includes a project-scoped agent skill at [`.agents/skills/glyph/SKILL.md`](.agents/skills/glyph/SKILL.md). It is designed to be agent-agnostic and `npx skills` compatible, so compatible coding agents can load the same operating model before touching the repo.
+
+The skill gives agents:
+
+- a thesis map for `arXiv:2509.00085` and how it maps to GLYPH;
+- a repo map for the frontend, policy compiler, circuit/prover, TEE worker, Solana verifier, and docs;
+- invariants for canonical policy commitments, Borsh journal bytes, `tx_hash` binding, production prover safety, VK integrity, and replay resistance;
+- validation commands for the relevant Rust, RISC Zero, and web paths.
+
+Verify discovery locally:
+
+```bash
+npx skills list --json
+```
+
+---
+
 ## Policy DSL — 9 rules
 
 Policies are authored in TOML, canonically serialized, and committed on-chain via SHA-256. Rules are split between the **ZK circuit** (stateless, provable) and the **TEE worker** (stateful).

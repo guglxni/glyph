@@ -116,6 +116,21 @@ const THESIS_PILLARS = [
   },
 ];
 
+const AGENT_SKILL_ITEMS = [
+  {
+    k: "Thesis map",
+    v: "keeps agents anchored to arXiv:2509.00085 and the trust-stack mapping",
+  },
+  {
+    k: "Repo map",
+    v: "routes work to the right frontend, circuit, TEE, verifier, and docs paths",
+  },
+  {
+    k: "Invariant guard",
+    v: "preserves policy commitments, journal bytes, tx binding, VK integrity, and replay safety",
+  },
+];
+
 export default function Page() {
   return (
     <WalletProvider>
@@ -520,7 +535,7 @@ export default function Page() {
                   Research credibility
                 </span>
                 <h2 className="mt-4 text-balance text-3xl font-semibold tracking-tightest text-white sm:text-4xl">
-                  arXiv:2509.00085, shipped as live Solana infrastructure
+                  Research paper implemented as live Solana infrastructure
                 </h2>
                 <p className="mt-4 text-base leading-relaxed text-white/55 sm:text-lg">
                   GLYPH implements the layered accountability architecture from Tobin South&rsquo;s
@@ -541,10 +556,7 @@ export default function Page() {
                     rel="noreferrer"
                     className="btn-ghost"
                   >
-                    arXiv:2509.00085 ↗
-                  </a>
-                  <a href={GITHUB_URL} target="_blank" rel="noreferrer" className="btn-ghost">
-                    Read the source ↗
+                    Read the research paper ↗
                   </a>
                 </div>
               </Reveal>
@@ -573,6 +585,58 @@ export default function Page() {
                         19 Lean 4 theorems · 0 sorry — the policy semantics are formally verified.
                       </p>
                     </div>
+                  </div>
+                </div>
+              </Reveal>
+            </div>
+          </div>
+        </section>
+
+        {/* ── Agent skill ── */}
+        <section className="relative border-y border-white/[0.05] bg-ink-900/40 py-24 sm:py-32">
+          <div className="container-glyph">
+            <div className="grid gap-12 lg:grid-cols-[minmax(0,0.85fr)_1fr] lg:items-center">
+              <Reveal>
+                <span className="eyebrow">
+                  <span className="h-1 w-1 rounded-full bg-glyph" />
+                  Agent skill
+                </span>
+                <h2 className="mt-4 text-balance text-3xl font-semibold tracking-tightest text-white sm:text-4xl">
+                  GLYPH ships with an agent-readable implementation guide
+                </h2>
+                <p className="mt-4 text-base leading-relaxed text-white/55 sm:text-lg">
+                  The repo includes a project-scoped{" "}
+                  <span className="font-mono text-glyph-200">glyph</span> skill for coding
+                  agents. It teaches any compatible agent how to work on GLYPH without weakening
+                  the policy, proof, verifier, or research-alignment guarantees.
+                </p>
+                <div className="mt-6 flex flex-wrap gap-3">
+                  <Pill tone="glyph">npx skills compatible</Pill>
+                  <Pill tone="neutral">agent-agnostic instructions</Pill>
+                  <Pill tone="zk">research-aware guardrails</Pill>
+                </div>
+              </Reveal>
+
+              <Reveal delay={0.1}>
+                <div className="card overflow-hidden">
+                  <div className="border-b border-white/[0.06] px-5 py-4">
+                    <div className="font-mono text-2xs uppercase tracking-[0.18em] text-white/38">
+                      .agents/skills/glyph/SKILL.md
+                    </div>
+                  </div>
+                  <div className="grid gap-px bg-white/[0.06]">
+                    {AGENT_SKILL_ITEMS.map((item) => (
+                      <div key={item.k} className="bg-ink-900/90 px-5 py-4">
+                        <div className="text-sm font-medium text-white/88">{item.k}</div>
+                        <div className="mt-1 text-sm leading-relaxed text-white/48">{item.v}</div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="border-t border-white/[0.06] px-5 py-4">
+                    <p className="font-mono text-2xs leading-relaxed text-white/42">
+                      Verify locally with <span className="text-white/65">npx skills list --json</span>;
+                      the skill is committed with the repo, not kept as a private handoff note.
+                    </p>
                   </div>
                 </div>
               </Reveal>
