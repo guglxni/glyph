@@ -62,13 +62,14 @@ jobs:
           echo "$HOME/.risc0/bin" >> "$GITHUB_PATH"
           export PATH="$HOME/.risc0/bin:$PATH"
           # Install a matching cargo-risczero + the risc0 Rust guest toolchain
-          # (riscv32im). risc0-build's build script requires the rzup-managed
-          # Rust toolchain to compile the guest ELF — install it explicitly and
-          # fail loudly if it's missing.
-          rzup install rust 1.81.0
+          # (riscv32im). risc0-build compiles the guest ELF with this toolchain.
+          # Must be rust 1.88.0 — the guest's transitive deps (indexmap 2.14,
+          # toml_edit 0.25, hashbrown 0.17) require rustc >= 1.85, so the older
+          # 1.81 toolchain fails dependency resolution.
+          rzup install rust 1.88.0
           rzup install cargo-risczero 1.2.6
           rzup install r0vm 1.2.6 || true
-          rzup default rust 1.81.0 || true
+          rzup default rust 1.88.0 || true
           rzup show
           echo "--- verifying risc0 rust toolchain is discoverable ---"
           rustup toolchain list | grep -i risc0 || \
