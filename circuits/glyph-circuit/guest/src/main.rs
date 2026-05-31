@@ -1,5 +1,6 @@
 #![no_main]
 
+use borsh::BorshSerialize;
 use glyph_common::{
     canonical_intent_preimage, canonical_serialize_policy, sha256, verify_mint_merkle_path,
     CircuitFailureCode, IntentPayload, MerklePath, Policy, PublicOutputs,
@@ -190,5 +191,12 @@ fn main() {
         circuit_rule_bitmap: bitmap,
         failure_code: failure as u8,
     };
-    env::commit(&outputs);
+
+    // RISC Zero's `env::commit(&T)` uses its serde journal encoding. The
+    // on-chain verifier and the worker both decode journal bytes with Borsh, so
+    // the guest must commit the Borsh bytes directly.
+    let journal_bytes = outputs
+        .try_to_vec()
+        .expect("PublicOutputs Borsh serialization should not fail");
+    env::commit_slice(&journal_bytes);
 }

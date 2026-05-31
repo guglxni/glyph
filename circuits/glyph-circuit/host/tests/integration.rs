@@ -375,7 +375,7 @@ fn test_groth16_proof_sizes() {
 #[test]
 #[ignore = "requires RISC0_DEV_MODE=1 env var — run with: RISC0_DEV_MODE=1 cargo test --features risc0 -- --ignored dev_mode"]
 fn dev_mode_generate_proof_roundtrip() {
-    use glyph_circuit_host::generate_proof;
+    use glyph_circuit_host::{generate_proof, IntentExtras};
 
     std::env::set_var("RISC0_DEV_MODE", "1");
 
@@ -383,7 +383,18 @@ fn dev_mode_generate_proof_roundtrip() {
     let intent = test_intent_payload();
     let tx_data = b"swap_instruction_data_here".to_vec();
 
-    let result = generate_proof(intent.clone(), policy.clone(), tx_data.clone());
+    let result = generate_proof(
+        intent.clone(),
+        policy.clone(),
+        tx_data.clone(),
+        1_700_000_500,
+        0,
+        IntentExtras {
+            allowed_tokens: None,
+            has_signer: true,
+            mint_inclusion_proofs: Vec::new(),
+        },
+    );
 
     match result {
         Ok((receipt, _public_inputs)) => {

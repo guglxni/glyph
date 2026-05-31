@@ -23,6 +23,8 @@
 use anyhow::Context;
 use anyhow::{anyhow, Result};
 #[cfg(feature = "risc0")]
+use borsh::BorshDeserialize;
+#[cfg(feature = "risc0")]
 use glyph_common::{build_mint_merkle_root, canonical_serialize_policy, sha256};
 use glyph_common::{IntentPayload, MerklePath, Policy, PublicOutputs};
 use serde::{Deserialize, Serialize};
@@ -215,12 +217,11 @@ pub fn generate_proof(
 
         let receipt = prove_info.receipt;
 
-        // Decode the journal — this is the authoritative source of public outputs.
-        // The on-chain verifier also decodes from journal_bytes; they must agree.
-        let outputs: PublicOutputs = receipt
-            .journal
-            .decode()
-            .context("failed to decode PublicOutputs from circuit journal")?;
+        // Decode the journal — this is the authoritative source of public
+        // outputs. The guest commits Borsh bytes directly so the host, worker,
+        // and on-chain verifier all hash/decode the same byte string.
+        let outputs: PublicOutputs = BorshDeserialize::try_from_slice(&receipt.journal.bytes)
+            .context("failed to Borsh-decode PublicOutputs from circuit journal")?;
 
         // Validate the circuit correctly committed the expected policy commitment.
         if outputs.policy_commitment != expected_policy_commitment {
