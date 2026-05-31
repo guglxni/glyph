@@ -3,39 +3,110 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: dark;
+  --bg: #050608;
 }
 
-html,
-body {
-  background-color: #07080a;
-  color: #e8eaed;
-}
-
-body {
+* {
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--bg);
+}
+
+body {
+  background: var(--bg);
+  color: #E6E9EF;
+  font-feature-settings: "ss01", "cv01", "cv11";
   text-rendering: optimizeLegibility;
 }
 
-/* subtle background grid + glow */
-.bg-field {
-  background-image:
-    radial-gradient(900px 500px at 50% -10%, rgba(61, 214, 140, 0.08), transparent 60%),
-    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-  background-size: 100% 100%, 44px 44px, 44px 44px;
-}
-
+/* Selection */
 ::selection {
-  background: rgba(61, 214, 140, 0.25);
+  background: rgba(20, 241, 149, 0.25);
+  color: #fff;
 }
 
-/* thin scrollbar for code blocks */
-.scroll-thin::-webkit-scrollbar {
-  height: 6px;
-  width: 6px;
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
 }
-.scroll-thin::-webkit-scrollbar-thumb {
-  background: #1c2026;
-  border-radius: 999px;
+::-webkit-scrollbar-track {
+  background: #050608;
+}
+::-webkit-scrollbar-thumb {
+  background: #1F242E;
+  border-radius: 8px;
+  border: 2px solid #050608;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #2A303B;
+}
+
+@layer components {
+  .container-glyph {
+    @apply mx-auto w-full max-w-content px-5 sm:px-8;
+  }
+
+  .eyebrow {
+    @apply inline-flex items-center gap-2 text-2xs font-medium uppercase tracking-[0.18em] text-white/45;
+  }
+
+  .card {
+    @apply rounded-2xl border border-white/[0.07] bg-ink-850/60 backdrop-blur-sm;
+  }
+
+  .hash {
+    @apply font-mono text-[0.78rem] tracking-tight break-all;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-glyph/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950;
+  }
+  .btn-primary {
+    @apply btn bg-glyph text-ink-950 px-5 py-2.5 hover:bg-glyph-400 hover:shadow-glow;
+  }
+  .btn-ghost {
+    @apply btn border border-white/10 bg-white/[0.02] text-white/85 px-5 py-2.5 hover:bg-white/[0.06] hover:border-white/25;
+  }
+}
+
+/* Subtle dotted/grid background for sections */
+.bg-dots {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+/* Animated gradient text */
+.text-gradient {
+  background: linear-gradient(100deg, #ffffff 10%, #BCFCE4 45%, #C193F4 90%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Reveal-on-scroll (no JS fallback friendly) */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+.reveal.in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
