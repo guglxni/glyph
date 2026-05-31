@@ -12,9 +12,14 @@ path = "src/main.rs"
 [workspace]
 
 [dependencies]
-# Relative path so the build is portable across machines/CI (was previously an
-# absolute path that broke risc0-build's `cargo metadata` on other hosts).
-glyph-common = { path = "../../../common" }
+# risc0-build runs `cargo metadata` on the guest THROUGH the host's `guest`
+# symlink (circuits/glyph-circuit/host/guest -> ../guest), resolving this path
+# lexically from that symlink location — NOT from the real guest/ dir. From
+# host/guest that is four levels up to the repo root: guest -> host ->
+# glyph-circuit -> circuits -> root. Hence `../../../../common`, not
+# `../../../common` (which resolved to circuits/common and broke CI). An absolute
+# path also worked locally but was non-portable.
+glyph-common = { path = "../../../../common" }
 risc0-zkvm = { version = "1.2", default-features = false, features = ["std"] }
 
 [profile.release]
