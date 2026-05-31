@@ -4,8 +4,7 @@ A polished, live demo for **GLYPH**, a verifiable guardrail layer for autonomous
 agents on Solana. Built with Next.js (App Router), TypeScript, and Tailwind.
 Deployed on Vercel.
 
-**Live:** https://web-aaryanguglanics21-3349s-projects.vercel.app
-(alias: https://web-lovat-seven-23.vercel.app)
+**Live:** https://projectglyph.xyz
 
 ## What it shows
 
@@ -61,8 +60,9 @@ npm start
 vercel --prod --yes
 ```
 
-The app is 100% static read-only (no secrets); it talks to
-`https://api.devnet.solana.com` from the client.
+The app keeps API keys client-owned and never stores secrets. It talks to
+`https://api.devnet.solana.com` from the client for live account reads, wallet
+balance checks, devnet airdrops, and policy-commitment signing previews.
 
 ## On-chain references (devnet)
 

@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { chat, isConfigured } from "@/lib/llm";
+import { PROGRAM_ID } from "@/lib/data";
 import {
   evaluate,
   hashIntent,
@@ -100,7 +101,7 @@ type ProbeRow = { id: string; label: string; decision: Decision; intentHash: str
 
 export function PolicyCompiler() {
   const [settings, setSettings] = useLlmSettings();
-  const { address } = useWalletContext();
+  const { address, walletName, canSignMessage, signMessage } = useWalletContext();
   const agent = address ?? DEMO_AGENT;
 
   const [prompt, setPrompt] = useState("");
@@ -112,6 +113,12 @@ export function PolicyCompiler() {
   const [commitment, setCommitment] = useState<string>("");
   const [probes, setProbes] = useState<ProbeRow[]>([]);
   const [rawJson, setRawJson] = useState<string>("");
+  const [signedDelegation, setSignedDelegation] = useState<{
+    message: string;
+    signature: string;
+  } | null>(null);
+  const [signing, setSigning] = useState(false);
+  const [signError, setSignError] = useState<string | null>(null);
 
   const configured = useMemo(() => isConfigured(settings), [settings]);
 
@@ -157,6 +164,8 @@ export function PolicyCompiler() {
         { jsonMode: true }
       );
       setRawJson(content);
+      setSignedDelegation(null);
+      setSignError(null);
       const parsed = extractJson(content);
       const { policy: guarded, notes: guardNotes } = guardPolicy(parsed);
       setNotes(guardNotes);
@@ -171,6 +180,29 @@ export function PolicyCompiler() {
       setProbes([]);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const signPolicyCommitment = async () => {
+    if (!address || !commitment) return;
+    setSigning(true);
+    setSignError(null);
+    try {
+      const message = [
+        "GLYPH policy delegation",
+        `cluster=devnet`,
+        `wallet=${address}`,
+        `agent=${agent}`,
+        `policy_commitment=${commitment}`,
+        `program=${PROGRAM_ID}`,
+        `issued_at=${new Date().toISOString()}`,
+      ].join("\n");
+      const signature = await signMessage(message);
+      setSignedDelegation({ message, signature });
+    } catch (e) {
+      setSignError(e instanceof Error ? e.message : "Failed to sign policy commitment.");
+    } finally {
+      setSigning(false);
     }
   };
 
@@ -312,6 +344,65 @@ export function PolicyCompiler() {
                   Same canonical serializer as the Rust SDK, the TEE worker and the on-chain
                   verifier. This is the value that would be registered on-chain for your agent.
                 </p>
+              </div>
+
+              {/* wallet-bound delegation */}
+              <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-4">
+                <span className="eyebrow !text-white/55">
+                  <span className="h-1 w-1 rounded-full bg-glyph" />
+                  wallet-bound delegation
+                </span>
+                {address ? (
+                  <>
+                    <div className="mt-2 grid gap-2 font-mono text-2xs">
+                      <div className="flex items-center justify-between gap-3 rounded-lg bg-ink-950/50 px-3 py-2">
+                        <span className="text-white/35">wallet</span>
+                        <span className="text-right text-glyph-300">
+                          {address.slice(0, 8)}…{address.slice(-6)}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between gap-3 rounded-lg bg-ink-950/50 px-3 py-2">
+                        <span className="text-white/35">provider</span>
+                        <span className="text-right text-white/70">{walletName ?? "wallet"}</span>
+                      </div>
+                    </div>
+                    <button
+                      onClick={signPolicyCommitment}
+                      disabled={!canSignMessage || signing || !commitment}
+                      className="mt-3 w-full rounded-lg border border-glyph/25 bg-glyph/[0.06] px-3 py-2 text-sm text-glyph-300 transition-colors hover:border-glyph/45 disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      {signing ? "Requesting signature…" : "Sign policy commitment"}
+                    </button>
+                    {!canSignMessage && (
+                      <p className="mt-2 text-2xs leading-relaxed text-amber-300">
+                        This wallet connected successfully, but did not expose Wallet Standard
+                        message signing in this browser.
+                      </p>
+                    )}
+                    {signError && (
+                      <p className="mt-2 text-2xs leading-relaxed text-deny-400">{signError}</p>
+                    )}
+                    {signedDelegation && (
+                      <div className="mt-3 space-y-2">
+                        <CopyHash value={signedDelegation.signature} label="signature" />
+                        <details>
+                          <summary className="cursor-pointer text-2xs text-white/40 hover:text-white/70">
+                            signed delegation payload
+                          </summary>
+                          <pre className="mt-2 max-h-36 overflow-auto rounded-lg border border-white/[0.07] bg-ink-950/60 p-3 font-mono text-2xs leading-relaxed text-white/55">
+                            {signedDelegation.message}
+                          </pre>
+                        </details>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <p className="mt-2 text-sm leading-relaxed text-white/45">
+                    Connect a wallet to make the compiled policy bind to your own delegator /
+                    agent identity, then sign the exact policy commitment for off-chain audit or
+                    registration workflows.
+                  </p>
+                )}
               </div>
 
               {/* probes */}

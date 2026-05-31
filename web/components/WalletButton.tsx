@@ -1,14 +1,28 @@
 "use client";
 
+import { Connection, LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+import { RPC_URL } from "@/lib/data";
 import { truncatePubkey, type StandardWallet } from "@/lib/wallet";
 import { useWalletContext } from "./WalletProvider";
 
 export function WalletButton() {
-  const { available, connected, connecting, address, walletName, error, connect, disconnect } =
-    useWalletContext();
+  const {
+    available,
+    connected,
+    connecting,
+    address,
+    walletName,
+    error,
+    canSignMessage,
+    connect,
+    disconnect,
+  } = useWalletContext();
   const [open, setOpen] = useState(false);
+  const [balance, setBalance] = useState<number | null>(null);
+  const [status, setStatus] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -23,6 +37,49 @@ export function WalletButton() {
     await connect(w);
     setOpen(false);
   };
+
+  const refreshBalance = async () => {
+    if (!address) return;
+    setBusy(true);
+    setStatus(null);
+    try {
+      const conn = new Connection(RPC_URL, "confirmed");
+      const lamports = await conn.getBalance(new PublicKey(address));
+      setBalance(lamports / LAMPORTS_PER_SOL);
+      setStatus("Devnet balance refreshed.");
+    } catch (e) {
+      setStatus(e instanceof Error ? e.message : "Failed to fetch balance.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const requestAirdrop = async () => {
+    if (!address) return;
+    setBusy(true);
+    setStatus("Requesting 1 devnet SOL…");
+    try {
+      const conn = new Connection(RPC_URL, "confirmed");
+      const sig = await conn.requestAirdrop(new PublicKey(address), LAMPORTS_PER_SOL);
+      await conn.confirmTransaction(sig, "confirmed");
+      const lamports = await conn.getBalance(new PublicKey(address));
+      setBalance(lamports / LAMPORTS_PER_SOL);
+      setStatus(`Airdrop confirmed · ${sig.slice(0, 8)}…${sig.slice(-6)}`);
+    } catch (e) {
+      setStatus(e instanceof Error ? e.message : "Airdrop failed.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  useEffect(() => {
+    if (connected && open) void refreshBalance();
+    if (!connected) {
+      setBalance(null);
+      setStatus(null);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [connected, open, address]);
 
   return (
     <div ref={ref} className="relative">
@@ -66,9 +123,43 @@ export function WalletButton() {
                   {walletName && <span className="text-2xs text-white/40">· {walletName}</span>}
                 </div>
                 <p className="mt-2 text-2xs leading-relaxed text-white/45">
-                  This is the agent identity GLYPH would bind a policy to. Devnet · read-only — no
-                  signing required.
+                  This is the human delegator / agent identity GLYPH binds policy to on devnet.
+                  Use it to fund demos and sign policy commitments.
                 </p>
+                <div className="mt-3 rounded-lg border border-white/[0.08] bg-white/[0.02] p-3">
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-2xs uppercase tracking-wider text-white/35">
+                      Devnet balance
+                    </span>
+                    <span className="font-mono text-sm text-white/80">
+                      {balance === null ? "…" : `${balance.toFixed(3)} SOL`}
+                    </span>
+                  </div>
+                  <div className="mt-3 grid grid-cols-2 gap-2">
+                    <button
+                      onClick={refreshBalance}
+                      disabled={busy}
+                      className="rounded-lg border border-white/10 px-3 py-2 text-2xs text-white/70 transition-colors hover:border-glyph/30 hover:bg-glyph/[0.05] disabled:opacity-50"
+                    >
+                      Refresh
+                    </button>
+                    <button
+                      onClick={requestAirdrop}
+                      disabled={busy}
+                      className="rounded-lg border border-glyph/25 bg-glyph/[0.06] px-3 py-2 text-2xs text-glyph-300 transition-colors hover:border-glyph/45 disabled:opacity-50"
+                    >
+                      Airdrop 1 SOL
+                    </button>
+                  </div>
+                  <div className="mt-2 font-mono text-2xs text-white/38">
+                    {canSignMessage ? "message signing available" : "message signing unavailable"}
+                  </div>
+                  {status && (
+                    <p className="mt-2 break-words text-2xs leading-relaxed text-white/45">
+                      {status}
+                    </p>
+                  )}
+                </div>
                 <button
                   onClick={() => {
                     disconnect();
@@ -105,7 +196,8 @@ export function WalletButton() {
                   </button>
                 ))}
                 <p className="px-2 pb-1 pt-2 text-2xs leading-relaxed text-white/40">
-                  Detected via the Wallet Standard. Devnet · read-only.
+                  Detected via the Wallet Standard. Devnet actions: balance, faucet, message
+                  signing, and policy binding.
                 </p>
               </div>
             )}

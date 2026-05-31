@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#050608"/>
+      <stop offset="0.52" stop-color="#08130f"/>
+      <stop offset="1" stop-color="#120a1f"/>
+    </linearGradient>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#14F195"/>
+      <stop offset="1" stop-color="#8A2BE2"/>
+    </linearGradient>
+    <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1" fill="#ffffff" opacity="0.1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#dots)" opacity="0.45"/>
+  <circle cx="920" cy="120" r="300" fill="#14F195" opacity="0.08"/>
+  <circle cx="1030" cy="500" r="260" fill="#8A2BE2" opacity="0.12"/>
+  <g transform="translate(72 72)">
+    <path d="M36 0l36 20.8v41.6L36 83.2 0 62.4V20.8L36 0z" fill="none" stroke="url(#g)" stroke-width="5" stroke-linejoin="round"/>
+    <circle cx="36" cy="39" r="11" fill="url(#g)"/>
+  </g>
+  <text x="170" y="124" fill="#ffffff" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700" letter-spacing="-0.02em">GLYPH</text>
+  <text x="72" y="235" fill="#ffffff" font-family="Arial, Helvetica, sans-serif" font-size="72" font-weight="800" letter-spacing="-0.04em">Verifiable guardrails</text>
+  <text x="72" y="315" fill="#ffffff" font-family="Arial, Helvetica, sans-serif" font-size="72" font-weight="800" letter-spacing="-0.04em">for autonomous agents</text>
+  <text x="72" y="390" fill="#c9d1cc" font-family="Arial, Helvetica, sans-serif" font-size="31" font-weight="400">One policy. Any Solana program. Proven in ZK.</text>
+  <g transform="translate(72 470)">
+    <rect width="282" height="52" rx="26" fill="#14F195" fill-opacity="0.12" stroke="#14F195" stroke-opacity="0.45"/>
+    <text x="28" y="35" fill="#75f8bd" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">projectglyph.xyz</text>
+  </g>
+  <g transform="translate(392 470)">
+    <rect width="304" height="52" rx="26" fill="#ffffff" fill-opacity="0.04" stroke="#ffffff" stroke-opacity="0.18"/>
+    <text x="28" y="35" fill="#d8d8dc" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">arXiv:2509.00085</text>
+  </g>
+</svg>

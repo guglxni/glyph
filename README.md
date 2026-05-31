@@ -9,12 +9,12 @@
 [![CI](https://github.com/guglxni/glyph/actions/workflows/ci.yml/badge.svg)](https://github.com/guglxni/glyph/actions/workflows/ci.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](./LICENSE)
 [![Devnet](https://img.shields.io/badge/Solana-devnet%20live-14F195?logo=solana&logoColor=white)](https://explorer.solana.com/address/G5RnXgNZYiS4NJey6JzyxTLvPPPUMqUDL7wg6nqaMD3g?cluster=devnet)
-[![Live Demo](https://img.shields.io/badge/demo-live-success)](https://web-lovat-seven-23.vercel.app)
+[![Live Demo](https://img.shields.io/badge/demo-live-success)](https://projectglyph.xyz)
 [![Tests](https://img.shields.io/badge/tests-114%20passing-success)]()
 [![ZK](https://img.shields.io/badge/ZK-RISC%20Zero%20%E2%86%92%20Groth16%20BN254-8A2BE2)]()
 [![Formal Verification](https://img.shields.io/badge/Lean%204-19%20theorems%20%E2%9C%93-orange)]()
 
-[Live Demo](https://web-lovat-seven-23.vercel.app) · [Devnet Program](https://explorer.solana.com/address/G5RnXgNZYiS4NJey6JzyxTLvPPPUMqUDL7wg6nqaMD3g?cluster=devnet) · [Architecture](docs/architecture.md) · [Demo Guide](docs/DEMO.md) · [Research Foundation](#-research-foundation)
+[Live Demo](https://projectglyph.xyz) · [Devnet Program](https://explorer.solana.com/address/G5RnXgNZYiS4NJey6JzyxTLvPPPUMqUDL7wg6nqaMD3g?cluster=devnet) · [Architecture](docs/architecture.md) · [Demo Guide](docs/DEMO.md) · [Research Foundation](#-research-foundation)
 
 </div>
 
@@ -306,7 +306,7 @@ reference: [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md).
 | 4 | `seed_vk` (real VK) | `5hJo9Jyj…gAvk` | [↗](https://explorer.solana.com/tx/5hJo9JyjdEKUqxwgFEusmxVVh9tR1kebJiRhwuKgb3zxXhPFUMV4uc6JxmAhJMrTT5ULiFMvxBYsRAzPEaK9gAvk?cluster=devnet) |
 | 5 | `initialize_vk_multisig` | `BxwF1fFF…WuDC` | [↗](https://explorer.solana.com/tx/BxwF1fFFdfXPRx2tis9uXgPuXDLULdbERuBtR18e3Y6jcCAzBm7SJU2Z5Vph8wGjmkCzbRJ7HxaG9GBRhgrWuDC?cluster=devnet) |
 | 6 | `register_agent` | `2Nfa9aZc…wDBLN` | [↗](https://explorer.solana.com/tx/2Nfa9aZc1Uv5DQg3qz4TY68dTFXWGqMuYB2NPf52XZhQepBsLM3Mecg4bKMEoGvWQdSc6JCMDDqXR17AvWKwDBLN?cluster=devnet) |
-| 7 | `verify_and_execute` | ⏳ pending Groth16 proof — see note | — |
+| 7 | `verify_and_execute` | CI proof generated; devnet execution not claimed yet — see note | — |
 
 **Verifier state (read from chain):** real VK seeded, on-chain `vk_hash` =
 `109aba43…2f709707` (matches `vk_real.rs`, prover `risc0-zkvm 1.2.6`); program data length
@@ -316,11 +316,13 @@ reference: [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md).
 
 | Item | URL |
 |------|-----|
-| **Live web demo** | https://web-lovat-seven-23.vercel.app |
+| **Live web demo** | https://projectglyph.xyz |
 | **Demo video** | `<DEMO_VIDEO_URL>` _(add your Loom link)_ |
 
 > **`verify_and_execute` scope (honest):** steps 1–6 above are live on devnet with real
-> txs. `verify_and_execute` requires a Groth16 proof, and **RISC Zero's docs confirm
+> txs. The CI proof-generation path now completes, but the final proof has not yet been
+> landed in a devnet `verify_and_execute` transaction. `verify_and_execute` requires a
+> Groth16 proof, and **RISC Zero's docs confirm
 > "generating a Groth16 receipt locally requires an x86 architecture with Docker support"**
 > — Apple Silicon (this build host) is unsupported (risc0 issues
 > [#1520](https://github.com/risc0/risc0/issues/1520),

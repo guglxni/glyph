@@ -27,11 +27,20 @@ export const metadata: Metadata = {
     url: SITE,
     siteName: "GLYPH",
     type: "website",
+    images: [
+      {
+        url: "/og.png",
+        width: 1200,
+        height: 630,
+        alt: "GLYPH — verifiable guardrails for autonomous AI agents on Solana",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "GLYPH — Verifiable guardrails for AI agents on Solana",
     description: "One policy. Any program. Cryptographically proven, on-chain.",
+    images: ["/og.png"],
   },
   icons: {
     icon: [
