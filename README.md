@@ -275,13 +275,14 @@ require_signer_present     = true
 | **Live web demo** | https://web-lovat-seven-23.vercel.app |
 | **Demo video** | `<DEMO_VIDEO_URL>` _(add your Loom link)_ |
 
-> **Scope note (honest):** deploy + initialize + real-VK-seed + VK-rotation multisig are
-> live on devnet. The full `register_agent → verify_and_execute` round-trip is built
-> (`scripts/e2e-devnet/`) and the circuit's `image_id` matches the seeded VK exactly, but
-> the final STARK→Groth16 proof wrap is **x86-only in RISC Zero** and this build host is
-> arm64 — so generating the real proof requires an x86 host / Docker / Bonsai. The policy
-> engine and pipeline are fully proven by the 114-test suite and the offline multi-protocol
-> demo. Status: [`docs/CAPSTONE_GAPS.md`](docs/CAPSTONE_GAPS.md).
+> **Devnet scope (honest):** deploy + initialize + VK-seed + VK-rotation multisig +
+> **`register_agent`** are all live on devnet with real on-chain txs. The full round-trip
+> is 2 steps: `register_agent` ✅ (tx
+> [`2Nfa9aZc…wDBLN`](https://explorer.solana.com/tx/2Nfa9aZc1Uv5DQg3qz4TY68dTFXWGqMuYB2NPf52XZhQepBsLM3Mecg4bKMEoGvWQdSc6JCMDDqXR17AvWKwDBLN?cluster=devnet))
+> and `verify_and_execute` ⏳ (needs a Groth16 proof — arch-gate patch committed at
+> `patches/risc0-groth16/`; blocked by Rosetta 2 SIGILL in the upstream prover
+> container's binaries on arm64). Policy logic is proven by 114 tests + multi-protocol
+> demo + 19 Lean theorems. Status: [`docs/CAPSTONE_GAPS.md`](docs/CAPSTONE_GAPS.md).
 
 ---
 

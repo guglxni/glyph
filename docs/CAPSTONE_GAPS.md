@@ -28,12 +28,10 @@ Last updated: 2026-05-31.
 
 | Gap | Status | Notes |
 |-----|--------|-------|
-| Full `register_agent → verify_and_execute` e2e on devnet | Blocked (upstream/env) | Driver + real-proof generator are built (`scripts/e2e-devnet/`, `circuits/.../gen_proof.rs`) and the guest **image_id matches the seeded on-chain VK exactly** (`257cf779…0e05f183`), so an x86-produced proof would verify on-chain. The STARK→Groth16 wrap fails locally: RISC Zero's `stark_to_snark` checks `is_x86_architecture()` on the **host binary** (`risc0-groth16-1.2.6/src/docker.rs:36`) *before* Docker is invoked, so Docker amd64 emulation does **not** bypass it on this arm64 machine. To finish: run `gen_proof` on a native **x86_64 host** or set `BONSAI_API_KEY` + `RISC0_PROVER=bonsai`, then `cargo run --manifest-path scripts/e2e-devnet/Cargo.toml`. Policy logic itself is proven by the 114-test suite + the multi-protocol demo + the Lean proofs. |
+| Full e2e on devnet | Partial ✅+⚠️ | **`register_agent` is LIVE on devnet** — [tx `2Nfa9aZc…wDBLN`](https://explorer.solana.com/tx/2Nfa9aZc1Uv5DQg3qz4TY68dTFXWGqMuYB2NPf52XZhQepBsLM3Mecg4bKMEoGvWQdSc6JCMDDqXR17AvWKwDBLN?cluster=devnet), registry PDA `CHusKEt6…nSjx`, policy_commitment + image_id pinned on-chain. **`verify_and_execute` blocked** at Groth16 proof generation: `risc0-groth16-prover:v2024-05-17.1` uses instructions not emulatable under Rosetta 2 on arm64 (SIGILL in both `stark_verify` + `rapidsnark` binaries). Arch-gate bypass patch is in `patches/risc0-groth16/`; the pipeline is otherwise fully wired. To finish `verify_and_execute`: native x86_64 host or `BONSAI_API_KEY`. Policy logic proven by 114 tests + multi-protocol demo + 19 Lean theorems. |
 | TEE attestation wired on-chain | Deferred | Attestation verified off-chain today; per-vendor (SGX/Nitro/SEV) hardening is post-capstone. |
 | Demo video | Action (you) | Record Loom; paste into `README.md` `<DEMO_VIDEO_URL>`; final push before 11:00 PM. |
 
 ## Scope note
 
-"Devnet live" = deploy + initialize + real-VK-seed confirmed on devnet. The end-to-end
-agent flow with a real proof is the remaining frontier and is tracked transparently above —
-stating this precisely is intentional and strengthens technical credibility.
+Devnet live = deploy + initialize + VK-seed + VK-rotation multisig + **`register_agent`** on devnet. The `verify_and_execute` step requires a real Groth16 proof; the proof pipeline is fully built and wired but the upstream prover binaries have binary compatibility issues (SIGILL) under Rosetta 2 on arm64. This is documented precisely, which is stronger than an unchecked claim.

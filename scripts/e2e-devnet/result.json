@@ -1,0 +1,10 @@
+{
+  "agent": "8qj2WUdrdByn29yMLPYTwtXQfXCVTt9K1n6Dt7EP9qJ",
+  "config_pda": "2371q4QnMm33R3G4nXxxBkieHa8E47BDTBsmZoiurZpT",
+  "program_id": "G5RnXgNZYiS4NJey6JzyxTLvPPPUMqUDL7wg6nqaMD3g",
+  "register_only": true,
+  "register_sig": "2Nfa9aZc1Uv5DQg3qz4TY68dTFXWGqMuYB2NPf52XZhQepBsLM3Mecg4bKMEoGvWQdSc6JCMDDqXR17AvWKwDBLN",
+  "registry_pda": "CHusKEt6yLTefqg81oDHRUgwj2RxUSugTcNCnRF8nSjx",
+  "rpc": "https://api.devnet.solana.com",
+  "verifier_vk_pda": "5V28XTKVnQYVEG16DzoHfeHKXsYUqG41PxQJhxFyhjyd"
+}

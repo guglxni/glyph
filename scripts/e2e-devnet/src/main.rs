@@ -135,12 +135,14 @@ fn main() -> Result<()> {
     let mut keypair_path =
         format!("{}/.config/solana/id.json", std::env::var("HOME").unwrap_or_default());
     let mut rpc = String::from("https://api.devnet.solana.com");
+    let mut register_only = false;
     let mut args = std::env::args().skip(1);
     while let Some(a) = args.next() {
         match a.as_str() {
             "--proof" => proof_path = args.next().context("--proof")?,
             "--keypair" => keypair_path = args.next().context("--keypair")?,
             "--rpc" => rpc = args.next().context("--rpc")?,
+            "--register-only" => register_only = true,
             other => return Err(anyhow!("unknown arg {other}")),
         }
     }
@@ -273,7 +275,18 @@ fn main() -> Result<()> {
         }
     }
 
-    // ── STEP 2: verify_and_execute ───────────────────────────────────────────
+    // ── STEP 2: verify_and_execute (skipped with --register-only) ───────────
+    if register_only {
+        println!("[e2e] --register-only: stopping after register_agent.");
+        result["register_only"] = serde_json::json!(true);
+        std::fs::write(
+            "scripts/e2e-devnet/result.json",
+            serde_json::to_string_pretty(&result)?,
+        )?;
+        println!("[e2e] result.json written.");
+        return Ok(());
+    }
+
     let nonce_seed_epoch: u32 = 0; // freshly-registered agents have epoch 0
     let (nonce_pda, _) = Pubkey::find_program_address(
         &[
