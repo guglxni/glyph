@@ -132,7 +132,7 @@ pub(crate) fn compute_bound_user_data(
     hasher.update(agent_pubkey);
     hasher.update(worker_pubkey);
     hasher.update(boot_nonce);
-    hasher.update(&epoch.to_le_bytes());
+    hasher.update(epoch.to_le_bytes());
     hasher.finalize().into()
 }
 

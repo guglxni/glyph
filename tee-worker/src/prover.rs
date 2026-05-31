@@ -211,6 +211,12 @@ impl Prover for RiscZeroProver {
 /// Start the worker with `GLYPH_PROVER=dev` or compile without the `risc0` feature.
 pub struct DevProver;
 
+impl Default for DevProver {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl DevProver {
     pub fn new() -> Self {
         Self

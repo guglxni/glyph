@@ -133,6 +133,10 @@ pub struct IntentExtras {
 /// - `RISC0_PROVER=bonsai` — use Bonsai remote prover (fast, ~10-30s)
 /// - `BONSAI_API_KEY=<key>` — required when using Bonsai
 /// - `RISC0_DEV_MODE=1` — skip proving entirely for CI (no valid proof produced)
+// The early `return` in the non-risc0 stub branch is required: the function has
+// two cfg-gated bodies and the explicit return keeps both type-checking cleanly.
+// Without `--features risc0` (how CI lints) clippy sees only the stub and flags it.
+#[allow(clippy::needless_return)]
 pub fn generate_proof(
     #[allow(unused_variables)] intent: IntentPayload,
     #[allow(unused_variables)] policy: Policy,

@@ -145,13 +145,11 @@ impl PolicyEngine {
         let rules = &self.config.rules;
 
         // Rule 9 — TOML-level policy expiry. 0 = never expires.
-        if rules.expires_at != 0 {
-            if now_unix >= 0 && (now_unix as u64) >= rules.expires_at {
-                return Err(PolicyViolation::new(
-                    PolicyRule::PolicyExpired,
-                    "policy expired",
-                ));
-            }
+        if rules.expires_at != 0 && now_unix >= 0 && (now_unix as u64) >= rules.expires_at {
+            return Err(PolicyViolation::new(
+                PolicyRule::PolicyExpired,
+                "policy expired",
+            ));
         }
 
         // Rule 1: MaxLamportsPerTx

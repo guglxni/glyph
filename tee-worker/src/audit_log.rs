@@ -98,8 +98,8 @@ impl AuditEntry {
     /// link.
     pub fn entry_hash(&self) -> [u8; 32] {
         let mut hasher = Sha256::new();
-        hasher.update(&self.canonical_unsigned_bytes());
-        hasher.update(&self.worker_signature);
+        hasher.update(self.canonical_unsigned_bytes());
+        hasher.update(self.worker_signature);
         hasher.finalize().into()
     }
 }
@@ -343,7 +343,7 @@ pub fn merkle_root(entries: &[AuditEntry]) -> [u8; 32] {
     }
     let mut layer: Vec<[u8; 32]> = entries.iter().map(|e| e.entry_hash()).collect();
     while layer.len() > 1 {
-        let mut next = Vec::with_capacity((layer.len() + 1) / 2);
+        let mut next = Vec::with_capacity(layer.len().div_ceil(2));
         for chunk in layer.chunks(2) {
             let left = chunk[0];
             let right = if chunk.len() == 2 { chunk[1] } else { chunk[0] };
